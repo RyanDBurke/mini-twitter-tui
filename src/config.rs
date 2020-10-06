@@ -40,6 +40,8 @@ use egg_mode;
 use std;
 use std::io::{Read, Write};
 
+pub use yansi::Paint;
+
 //This is not an example that can be built with cargo! This is some helper code for the other
 //examples so they can load access keys from the same place.
 
@@ -149,5 +151,16 @@ impl Config {
         } else {
             None
         }
+    }
+}
+
+pub fn print_tweet(tweet: &egg_mode::tweet::Tweet) {
+    if let Some(ref user) = tweet.user {
+        println!(
+            "{} (@{}) posted at {}",
+            Paint::blue(&user.name),
+            Paint::bold(Paint::blue(&user.screen_name)),
+            tweet.created_at.with_timezone(&chrono::Local)
+        );
     }
 }

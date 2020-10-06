@@ -1113,8 +1113,10 @@ checksum = "59547bce71d9c38b83d9c0e92b6066c4253371f15005def0c30d9657f50c7642"
 name = "twitter-tui"
 version = "0.1.0"
 dependencies = [
+ "chrono",
  "egg-mode",
  "tokio",
+ "yansi",
 ]
 
 [[package]]
@@ -1309,3 +1311,9 @@ dependencies = [
  "winapi 0.2.8",
  "winapi-build",
 ]
+
+[[package]]
+name = "yansi"
+version = "0.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9fc79f4a1e39857fc00c3f662cbf2651c771f00e9c15fe2abc341806bd46bd71"
