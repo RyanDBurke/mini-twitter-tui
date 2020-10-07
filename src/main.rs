@@ -1,6 +1,8 @@
 /* ================= MAIN =================*/
 
 mod config;
+mod util;
+use util::utils::*;
 
 use egg_mode::user;
 use egg_mode::error::Result;
@@ -8,7 +10,7 @@ use egg_mode::error::Result;
 #[tokio::main]
 async fn main() -> Result<()> {
 
-    /*    
+     
     let config = config::Config::load().await;
 
     println!("");
@@ -26,10 +28,10 @@ async fn main() -> Result<()> {
     {
         print_user(user)
     }
-    */
+    
 
-
-
+/*
+    
     let config = config::Config::load().await;
     let tweet_id = 766678057788829697;
 
@@ -48,25 +50,6 @@ async fn main() -> Result<()> {
     }
 
     Ok(())
-}
-
-fn print_user(user: &user::TwitterUser) {
-    println!("");
-    println!("{} (@{})", user.name, user.screen_name);
-    println!("Created at {}", user.created_at);
-    println!(
-        "Follows {}, followed by {}",
-        user.friends_count, user.followers_count
-    );
-    if let Some(ref desc) = user.description {
-        println!("{}", desc);
-    } else {
-        println!("(no description provided)");
-    }
-    match (&user.location, &user.url) {
-        (&Some(ref loc), &Some(ref link)) => println!("{} | {}", loc, link),
-        (&None, &Some(ref link)) => println!("{}", link),
-        (&Some(ref loc), &None) => println!("{}", loc),
-        (&None, &None) => (),
-    }
+*/
+    Ok(())
 }

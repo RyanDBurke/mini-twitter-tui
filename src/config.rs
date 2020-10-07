@@ -1,39 +1,6 @@
 /* ================= CONFIG =================*/
 
-/*
-pub struct Config {
-    pub consumer_key: String,
-    pub consumer_secret: String,
-    pub access_key: String,
-    pub access_secret: String,
-}
-
-impl Config {
-    pub fn load() -> Config {
-
-        println!("loading twitter_api keys!");
-
-        let consumer_key = String::from("pZuHdmyRc84cDRDNjlLmbqXH5");
-        let consumer_secret = String::from("cyghlODDLxlk7zbYjJEaWpNawBNzP3JcTcDxHGCy2JxNDFbUDD");
-        let access_key = String::from("271056234-mLgnT9HFriRgt3gJvZMjNhBbSBZ75roOiwzcBVDW");
-        let access_secret = String::from("jhAI9V3BXWx6IcN9UMEmW8KEETxgJZ9IxDjWrmcKj7C2V");
-
-        Config {
-            consumer_key,
-            consumer_secret,
-            access_key,
-            access_secret,
-        }
-    }
-}
-*/
-
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
-
-//since this is going to get included in examples that might not use everything, clear out warnings
-//that are unnecessary
+// clear out warnings
 #![allow(dead_code)]
 
 use egg_mode;
@@ -41,9 +8,6 @@ use std;
 use std::io::{Read, Write};
 
 pub use yansi::Paint;
-
-//This is not an example that can be built with cargo! This is some helper code for the other
-//examples so they can load access keys from the same place.
 
 pub struct Config {
     pub token: egg_mode::Token,
@@ -65,8 +29,9 @@ impl Config {
     /// twitter_settings file. Idealy we would recurse, but that requires boxing
     /// the output which doesn't seem worthwhile
     async fn load_inner() -> Option<Self> {
-        //IMPORTANT: make an app for yourself at apps.twitter.com and get your
-        //key/secret into these files; these examples won't work without them
+        
+        
+        // keys, find a way to keep these hidden
         let consumer_key = String::from("pZuHdmyRc84cDRDNjlLmbqXH5");
         let consumer_secret = String::from("cyghlODDLxlk7zbYjJEaWpNawBNzP3JcTcDxHGCy2JxNDFbUDD");
 
