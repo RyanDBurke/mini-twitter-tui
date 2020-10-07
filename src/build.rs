@@ -14,20 +14,23 @@ use crate::util::tweet_utils::*;
 use egg_mode::user;
 use egg_mode::error::Result;
 
+use std::io;
+use tui::Terminal;
+use tui::backend::TermionBackend;
+use termion::raw::IntoRawMode;
+
 
 // native library imports
 use std::vec::Vec;
 
 #[tokio::main]
-pub async fn build() -> Result<()> {     
+pub async fn build_ui() -> Result<()> {     
     let config = config::Config::load().await;
 
-    
-    println!("");
-    println!("Loading the user's home timeline:");
-    print_timeline(&config, 5).await;
-
-
-
+    /*
+    let stdout = io::stdout().into_raw_mode()?;
+    let backend = TermionBackend::new(stdout);
+    let mut terminal = Terminal::new(backend)?;
+    */
     Ok(())
 }
