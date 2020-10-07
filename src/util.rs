@@ -91,28 +91,26 @@ pub mod tweet_utils {
         Ok(())
     }
 
-    // overload?
-    pub fn print_tweet_status(tweet: &egg_mode::tweet::Tweet) {
-        let (month, day, year) = date_parse(tweet);
-        if let Some(ref user) = tweet.user {              
-            println!(
-                "{} \n[(@{}) posted at {} {}, {}]",
-                tweet.text,
-                user.screen_name,
-                month,
-                day,
-                year
-            );            
-        }
-    }
-
-    // print timeline
-    pub async fn print_timeline(config: &config::Config, page_size: i32) -> Result<()> {
+    // print timeline with page_size number of tweets
+    pub async fn print_home_timeline(config: &config::Config, page_size: i32) -> Result<()> {
         let home = egg_mode::tweet::home_timeline(&config.token).with_page_size(page_size);
         let (_home, feed) = home.start().await?;
         for status in feed.iter() {
-            print_tweet_status(&status);
+            let tweet = &status;
+            //print_tweet_status(&status);
+
+            let (month, day, year) = date_parse(tweet);
             println!("");
+            if let Some(ref user) = tweet.user {              
+                println!(
+                    "{} \n[(@{}) posted at {} {}, {}]",
+                    tweet.text,
+                    user.screen_name,
+                    month,
+                    day,
+                    year
+                );            
+            }
         }
 
         Ok(())
