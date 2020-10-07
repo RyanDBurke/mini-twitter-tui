@@ -7,10 +7,8 @@
 
 // personal imports
 mod config;
-mod util; use util::utils::*;
+mod util; use util::user_utils::*; use util::tweet_utils::*;
 mod build; use build::build;
 
-
-fn main() {
-    build();
-}
+// theres something about one-line main() functions that I love
+fn main() { build(); }
