@@ -23,7 +23,3 @@ pub fn date_parse(tweet: &egg_mode::tweet::Tweet) -> (&str, u32, i32) {
 pub async fn get_config() -> config::Config {
     config::Config::load().await
 }
-
-pub fn hello() {
-    println!("hello");
-}

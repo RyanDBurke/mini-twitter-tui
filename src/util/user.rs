@@ -1,6 +1,7 @@
 /* ================= USER UTILS =================*/
 
 #![allow(dead_code)]
+#![allow(unused_imports)]
 
 // imports
 use crate::config::config;
@@ -8,30 +9,31 @@ use egg_mode::error::Result;
 use egg_mode::user;
 use std::vec::Vec;
 
-// pass a single user, print informations
-// execute with .await
-pub async fn print_user(config: &config::Config, users: Vec<egg_mode::user::UserID>) -> Result<()> {
+// pass a single user, print informations [execute with .await]
+pub async fn user_to_string(config: &config::Config, users: Vec<egg_mode::user::UserID>) -> String {
+    let mut user_to_string = String::from("");
     for user in user::lookup(users, &config.token)
         .await
         .unwrap()
         .response
         .iter()
     {
-        println!("");
-        println!("{} (@{})", user.name, user.screen_name);
-        println!("Created at {}", user.created_at);
-        println!(
-            "Follows {}, followed by {}",
-            user.friends_count, user.followers_count
-        );
+        user_to_string = user_to_string + &format!("\n");
+        user_to_string = user_to_string + &format!("{} (@{})\n", user.name, user.screen_name);
+        user_to_string = user_to_string + &format!("Created at {}\n", user.created_at);
+        user_to_string = user_to_string
+            + &format!(
+                "Follows {}, followed by {}\n",
+                user.friends_count, user.followers_count
+            );
         if let Some(ref desc) = user.description {
-            println!("{}", desc);
+            user_to_string = user_to_string + &format!("{}\n", desc);
         } else {
-            println!("[no description provided]");
+            user_to_string = user_to_string + &format!("[no description provided]\n");
         }
     }
 
-    Ok(())
+    String::from(user_to_string)
 }
 
 // returns a single user given
