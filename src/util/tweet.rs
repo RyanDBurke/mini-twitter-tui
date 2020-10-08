@@ -1,17 +1,11 @@
 /* ================= TWEET UTILS =================*/
 
+#![allow(dead_code)]
+
 // imports
-// use crate::config;
-mod config;
-// use crate::util::misc_utils::*;
-//use super::misc;
-mod super;
-use chrono::{Datelike, NaiveDate, Weekday};
+use crate::config::config;
+use crate::util::misc;
 use egg_mode::error::Result;
-use egg_mode::user;
-use std::fmt::Display;
-use std::vec::Vec;
-use yansi::Paint;
 
 // print single tweet [run with .await]
 pub async fn print_tweet(config: &config::Config, tweet_id: u64) -> Result<()> {

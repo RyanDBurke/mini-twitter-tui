@@ -1,6 +1,9 @@
 /* ================= MISC UTIL =================*/
 
-use chrono::{Datelike, NaiveDate, Weekday};
+#![allow(dead_code)]
+
+// imports
+use chrono::Datelike;
 
 // returns (month, day, year)
 pub fn date_parse(tweet: &egg_mode::tweet::Tweet) -> (&str, u32, i32) {

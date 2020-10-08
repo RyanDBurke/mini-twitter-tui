@@ -1,19 +1,14 @@
 /* ================= USER UTILS =================*/
 
+#![allow(dead_code)]
+
 // imports
-/*
-use crate::config;
-use egg_mode::error::Result;
-use egg_mode::user;
-use std::vec::Vec;
-*/
-
-mod config;
+use crate::config::config;
 use egg_mode::error::Result;
 use egg_mode::user;
 use std::vec::Vec;
 
-// pass a single user, print informationS
+// pass a single user, print informations
 // execute with .await
 pub async fn print_user(config: &config::Config, users: Vec<egg_mode::user::UserID>) -> Result<()> {
     for user in user::lookup(users, &config.token)
@@ -34,16 +29,6 @@ pub async fn print_user(config: &config::Config, users: Vec<egg_mode::user::User
         } else {
             println!("[no description provided]");
         }
-
-        /*
-        // location & link
-        match (&user.location, &user.url) {
-            (&Some(ref loc), &Some(ref link)) => println!("{} | {}", loc, link),
-            (&None, &Some(ref link)) => println!("{}", link),
-            (&Some(ref loc), &None) => println!("{}", loc),
-            (&None, &None) => (),
-        }
-        */
     }
 
     Ok(())

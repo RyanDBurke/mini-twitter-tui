@@ -1,13 +1,11 @@
 /* ================= BUILD =================*/
 
 // clear out warnings
-#![allow(dead_code)]
 #![allow(unused_imports)]
 
 // personal imports
-// include config
-use crate::config;
-// include util
+use crate::config::config;
+use crate::util::*;
 
 // 3rd-party library imports
 use egg_mode::error::Result;
