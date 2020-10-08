@@ -9,31 +9,31 @@ use egg_mode::error::Result;
 use egg_mode::user;
 use std::vec::Vec;
 
-// pass a single user, print informations [execute with .await]
+// pass a single user, return string of info [execute with .await]
 pub async fn user_to_string(config: &config::Config, users: Vec<egg_mode::user::UserID>) -> String {
-    let mut user_to_string = String::from("");
+    let mut result = String::from("");
     for user in user::lookup(users, &config.token)
         .await
         .unwrap()
         .response
         .iter()
     {
-        user_to_string = user_to_string + &format!("\n");
-        user_to_string = user_to_string + &format!("{} (@{})\n", user.name, user.screen_name);
-        user_to_string = user_to_string + &format!("Created at {}\n", user.created_at);
-        user_to_string = user_to_string
+        result = result + &format!("\n");
+        result = result + &format!("{} (@{})\n", user.name, user.screen_name);
+        result = result + &format!("Created at {}\n", user.created_at);
+        result = result
             + &format!(
                 "Follows {}, followed by {}\n",
                 user.friends_count, user.followers_count
             );
         if let Some(ref desc) = user.description {
-            user_to_string = user_to_string + &format!("{}\n", desc);
+            result = result + &format!("{}\n", desc);
         } else {
-            user_to_string = user_to_string + &format!("[no description provided]\n");
+            result = result + &format!("[no description provided]\n");
         }
     }
 
-    String::from(user_to_string)
+    String::from(result)
 }
 
 // returns a single user given
