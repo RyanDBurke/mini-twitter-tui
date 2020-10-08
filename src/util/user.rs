@@ -9,6 +9,40 @@ use egg_mode::error::Result;
 use egg_mode::user;
 use std::vec::Vec;
 
+pub struct User {
+    pub name: String,
+    pub screen_name: String,
+    pub desc: String,
+}
+
+impl User {
+    pub async fn build(config: &config::Config, users: Vec<egg_mode::user::UserID>) -> Self {
+
+        let mut username = String::from("");
+        let mut screenname = String::from("");
+        let mut description = String::from("");
+
+        for user in user::lookup(users, &config.token)
+        .await
+        .unwrap()
+        .response
+        .iter() {
+            username = format!("{}", user.name);
+            screenname = format!("{}", user.screen_name);
+
+            if let Some(ref desc) = user.description {
+                description = format!("{}", desc);
+            }
+        }
+
+        User {
+            name: username,
+            screen_name: screenname,
+            desc: description,
+        }
+    }
+}
+
 // pass a single user, return string of info [execute with .await]
 pub async fn user_to_string(config: &config::Config, users: Vec<egg_mode::user::UserID>) -> String {
     let mut result = String::from("");

@@ -5,7 +5,7 @@
 
 // personal imports
 use crate::config::config;
-use crate::util::*;
+use crate::util;
 
 // 3rd-party library imports
 use egg_mode::error::Result;
@@ -16,14 +16,22 @@ use std::io;
 use termion::raw::IntoRawMode;
 use tui::backend::TermionBackend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
-use tui::widgets::{Block, Borders, Widget};
+use tui::style::{Color, Style};
+use tui::symbols::{line::VERTICAL, DOT};
+use tui::text::Spans;
+use tui::widgets::{Block, Borders, Tabs, Widget};
 use tui::Terminal;
 
 // native library imports
 use std::vec::Vec;
 
 // build our terminal UI
-pub fn build_ui() -> std::result::Result<(), io::Error> {
+pub async fn build_ui() -> std::result::Result<(), io::Error> {
+    // User is a User Struct
+    let config = config::Config::load().await;
+    let user = util::user::get_user(&config, &(config.screen_name));
+    let current_user = util::user::User::build(&config, user).await;
+
     // clear terminal
     print!("\x1B[2J");
 
@@ -34,6 +42,7 @@ pub fn build_ui() -> std::result::Result<(), io::Error> {
 
     // build terminal
     terminal.draw(|f| {
+        // header
         let chunks = Layout::default()
             .direction(Direction::Vertical)
             .margin(1)
@@ -45,23 +54,54 @@ pub fn build_ui() -> std::result::Result<(), io::Error> {
                 .as_ref(),
             )
             .split(f.size());
-        let main_block = Block::default().title("twitter-tui").borders(Borders::ALL);
-        f.render_widget(main_block, chunks[0]);
+        let user_list = [
+            current_user.name,
+            format!("@{}", current_user.screen_name),
+            current_user.desc,
+        ]
+        .iter()
+        .cloned()
+        .map(Spans::from)
+        .collect();
+        let header = Tabs::new(user_list)
+            .block(
+                Block::default()
+                    .title(" twitter-tui ")
+                    .borders(Borders::ALL),
+            )
+            .style(Style::default().fg(Color::White))
+            //.highlight_style(Style::default().fg(Color::Yellow))
+            .divider(VERTICAL);
+        f.render_widget(header, chunks[0]);
 
-        // sidebar
+        // tabs
         let chunks = Layout::default()
-            .direction(Direction::Horizontal)
+            //.direction(Direction::Horizontal)
+            .direction(Direction::Vertical)
             .horizontal_margin(1)
             .vertical_margin(4)
-            .constraints(
-                [
-                    Constraint::Percentage(10), // reduced height of block 1
-                    Constraint::Length(40),
-                ]
-                .as_ref(),
-            )
+            .constraints([Constraint::Percentage(7), Constraint::Length(2)].as_ref())
             .split(f.size());
-        let sidebar = Block::default().title("sidebar").borders(Borders::ALL);
-        f.render_widget(sidebar, chunks[0]);
+        let tabs_list = ["home", "explore", "profile"]
+            .iter()
+            .cloned()
+            .map(Spans::from)
+            .collect();
+        let tabs = Tabs::new(tabs_list)
+            .block(Block::default().title(" tabs ").borders(Borders::ALL))
+            .style(Style::default().fg(Color::White))
+            .highlight_style(Style::default().fg(Color::Yellow))
+            .divider(DOT);
+        f.render_widget(tabs, chunks[0]);
+
+        // timeline
+        let chunks = Layout::default()
+            .direction(Direction::Vertical)
+            .horizontal_margin(1)
+            .vertical_margin(7)
+            .constraints([Constraint::Percentage(50), Constraint::Length(2)].as_ref())
+            .split(f.size());
+        let body = Block::default().title(" home ").borders(Borders::ALL);
+        f.render_widget(body, chunks[0]);
     })
 }

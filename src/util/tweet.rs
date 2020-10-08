@@ -28,8 +28,7 @@ pub async fn get_tweet(config: &config::Config, tweet_id: u64) -> Result<String>
     Ok(String::from(result))
 }
 
-// print timeline with page_size number of tweets
-// use await and matching to extract result
+// print timeline with page_size number of tweets [use .await]
 pub async fn get_home_timeline(config: &config::Config, page_size: i32) -> Result<Vec<String>> {
     let mut result: Vec<String> = vec![];
 
@@ -53,5 +52,6 @@ pub async fn get_home_timeline(config: &config::Config, page_size: i32) -> Resul
         result.push(String::from(current_tweet));
     }
 
+    // use match to extract timeline
     Ok(result)
 }
