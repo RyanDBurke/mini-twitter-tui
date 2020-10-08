@@ -26,7 +26,7 @@ impl Config {
     }
 
     /// This needs to be a separate function so we can retry after creating the
-    /// twitter_settings file. Idealy we would recurse, but that requires boxing
+    /// settings file. Idealy we would recurse, but that requires boxing
     /// the output which doesn't seem worthwhile
     pub async fn load_inner() -> Option<Self> {
         
@@ -43,7 +43,7 @@ impl Config {
         let token: egg_mode::Token;
 
         //look at all this unwrapping! who told you it was my birthday?
-        if let Ok(mut f) = std::fs::File::open("twitter_settings") {
+        if let Ok(mut f) = std::fs::File::open("./src/config/settings") {
             f.read_to_string(&mut config).unwrap();
 
             let mut iter = config.split('\n');
@@ -64,7 +64,7 @@ impl Config {
                 println!("We'll have to reauthenticate before continuing.");
                 std::fs::remove_file("twitter_settings").unwrap();
             } else {
-                println!("Welcome back, {}!\n", username);
+                println!("[welcome, @{}, lets get to it]\n", username);
             }
         } else {
             let request_token = egg_mode::auth::request_token(&con_token, "oob").await.unwrap();
@@ -100,14 +100,14 @@ impl Config {
                 _ => unreachable!(),
             }
 
-            let mut f = std::fs::File::create("twitter_settings").unwrap();
+            let mut f = std::fs::File::create("./src/config/settings").unwrap();
             f.write_all(config.as_bytes()).unwrap();
 
-            println!("Welcome, {}, let's get this show on the road!", username);
+            println!("[welcome, @{}, lets get to it]", username);
         }
 
         //TODO: Is there a better way to query whether a file exists?
-        if std::fs::metadata("twitter_settings").is_ok() {
+        if std::fs::metadata("./src/config/settings").is_ok() {
             Some(Config {
                 token: token,
                 user_id: user_id,

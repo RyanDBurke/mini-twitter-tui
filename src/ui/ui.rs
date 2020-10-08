@@ -65,9 +65,3 @@ pub fn build_ui() -> std::result::Result<(), io::Error> {
         f.render_widget(sidebar, chunks[0]);
     })
 }
-
-// return us our relevant Config struct
-#[tokio::main]
-pub async fn get_config() -> config::Config {
-    config::Config::load().await
-}
