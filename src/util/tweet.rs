@@ -30,7 +30,7 @@ pub async fn get_tweet(config: &config::Config, tweet_id: u64) -> Result<String>
 
 // print timeline with page_size number of tweets
 // use await and matching to extract result
-pub async fn print_home_timeline(config: &config::Config, page_size: i32) -> Result<Vec<String>> {
+pub async fn get_home_timeline(config: &config::Config, page_size: i32) -> Result<Vec<String>> {
     let mut result: Vec<String> = vec![];
 
     let home = egg_mode::tweet::home_timeline(&config.token).with_page_size(page_size);
