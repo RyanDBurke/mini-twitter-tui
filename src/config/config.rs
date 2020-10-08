@@ -28,7 +28,7 @@ impl Config {
     /// This needs to be a separate function so we can retry after creating the
     /// twitter_settings file. Idealy we would recurse, but that requires boxing
     /// the output which doesn't seem worthwhile
-    async fn load_inner() -> Option<Self> {
+    pub async fn load_inner() -> Option<Self> {
         
         
         // keys, find a way to keep these hidden

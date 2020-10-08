@@ -5,10 +5,9 @@
 #![allow(unused_imports)]
 
 // personal imports
+// include config
 use crate::config;
-// mod util;
-use crate::util::tweet_utils::*;
-use crate::util::user_utils::*;
+// include util
 
 // 3rd-party library imports
 use egg_mode::error::Result;
