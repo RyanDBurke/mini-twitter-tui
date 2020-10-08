@@ -76,7 +76,6 @@ pub async fn build_ui() -> std::result::Result<(), io::Error> {
 
         // tabs
         let chunks = Layout::default()
-            //.direction(Direction::Horizontal)
             .direction(Direction::Vertical)
             .horizontal_margin(1)
             .vertical_margin(4)
@@ -90,7 +89,8 @@ pub async fn build_ui() -> std::result::Result<(), io::Error> {
         let tabs = Tabs::new(tabs_list)
             .block(Block::default().title(" tabs ").borders(Borders::ALL))
             .style(Style::default().fg(Color::White))
-            .highlight_style(Style::default().fg(Color::Yellow))
+            .highlight_style(Style::default().fg(Color::Cyan))
+            .select(0) // chooses which tab is selected
             .divider(DOT);
         f.render_widget(tabs, chunks[0]);
 
