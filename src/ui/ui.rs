@@ -15,19 +15,22 @@ use egg_mode::user;
 use termion::raw::IntoRawMode;
 use tui::backend::TermionBackend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
-use tui::style::{Color, Style, Modifier};
+use tui::style::{Color, Modifier, Style};
 use tui::symbols::{line::VERTICAL, DOT};
 use tui::text::Spans;
-use tui::widgets::{Block, Borders, Tabs, Widget, List, ListItem};
+use tui::widgets::{Block, Borders, List, ListItem, Tabs, Widget};
 use tui::Terminal;
 
 // native library imports
-use std::vec::Vec;
 use std::io;
+use std::vec::Vec;
 
 // build our terminal UI
-pub fn build_ui(tab_key: usize, current_user: util::user::User) -> std::result::Result<(), io::Error> {
-
+pub fn build_ui(
+    tab_key: usize,
+    current_user: util::user::User,
+    tweets: Vec<util::tweet::Tweet>,
+) -> std::result::Result<(), io::Error> {
     // clear terminal
     print!("\x1B[2J");
 
@@ -38,18 +41,11 @@ pub fn build_ui(tab_key: usize, current_user: util::user::User) -> std::result::
 
     // build terminal
     terminal.draw(|f| {
-
         /*=== header ===*/
         let chunks = Layout::default()
             .direction(Direction::Vertical)
             .margin(1)
-            .constraints(
-                [
-                    Constraint::Percentage(5),
-                    Constraint::Percentage(95),
-                ]
-                .as_ref(),
-            )
+            .constraints([Constraint::Percentage(5), Constraint::Percentage(95)].as_ref())
             .split(f.size());
         let user_list = [
             current_user.name,
@@ -90,12 +86,46 @@ pub fn build_ui(tab_key: usize, current_user: util::user::User) -> std::result::
             .divider(DOT);
         f.render_widget(tabs, chunks[0]);
 
+        /*=== tweet(s) ===*/
+        let v_margin = [8, 12, 16, 20, 24];
+        let percentage = [10, 12, 14, 20, 32];
+        for i in 0..(tweets.len()) {
+            let tweet = &tweets[i];
+            let text = format!(" {} ", tweet.text);
+            let name = format!(" @{} ", tweet.screen_name);
+
+            /*=== tweet ===*/
+            let chunks = Layout::default()
+                .direction(Direction::Vertical)
+                .horizontal_margin(3)
+                .vertical_margin(v_margin[i])
+                .constraints(
+                    [
+                        Constraint::Percentage(percentage[i]),
+                        Constraint::Percentage(60),
+                    ]
+                    .as_ref(),
+                )
+                .split(f.size());
+            /*
+            let text_tab = ["hello"].iter().cloned().map(Spans::from).collect();
+            let tweet_text = Tabs::new(text_tab).block(
+                Block::default()
+                    .title(name)
+                    .borders(Borders::ALL)
+                    .style(Style::default().fg(Color::White)),
+            );
+            */
+            let tweet = Block::default().title(name).borders(Borders::ALL);
+            f.render_widget(tweet, chunks[0]);
+        }
+
         /*=== timeline ===*/
         let chunks = Layout::default()
             .direction(Direction::Vertical)
             .horizontal_margin(1)
             .vertical_margin(7)
-            .constraints([Constraint::Percentage(47), Constraint::Percentage(60)].as_ref())
+            .constraints([Constraint::Percentage(45), Constraint::Percentage(60)].as_ref())
             .split(f.size());
         let tabs_list = ["home", "explore", "profile"]; // redefining tabs_list
         let title = format!(" {} ", tabs_list[tab_key]);
@@ -106,16 +136,21 @@ pub fn build_ui(tab_key: usize, current_user: util::user::User) -> std::result::
         let chunks = Layout::default()
             .direction(Direction::Vertical)
             .horizontal_margin(1)
-            .vertical_margin(30)
-            .constraints([Constraint::Percentage(100), Constraint::Length(5)].as_ref())
+            .vertical_margin(29)
+            .constraints([Constraint::Percentage(70), Constraint::Length(5)].as_ref())
             .split(f.size());
-        let control_list = ["n: next tweet","q: quit", "i: info"]
+        let control_list = ["n: next tweet", "q: quit", "i: info"]
             .iter()
             .cloned()
             .map(Spans::from)
             .collect();
         let controls = Tabs::new(control_list)
-            .block(Block::default().title(" controls ").borders(Borders::ALL).style(Style::default().fg(Color::White)))
+            .block(
+                Block::default()
+                    .title(" controls ")
+                    .borders(Borders::ALL)
+                    .style(Style::default().fg(Color::White)),
+            )
             .divider(VERTICAL);
         f.render_widget(controls, chunks[0]);
     })
