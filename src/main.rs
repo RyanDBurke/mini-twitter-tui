@@ -81,7 +81,7 @@ async fn main() {
 
         match timeline {
             Ok(t) => {tweets = t;},
-            Err(e) => println!("Error extracting timeline tweets {}", e),
+            Err(e) => println!("{}", e),
         }
 
         // split tweets vector to show 5 of the 20 tweets

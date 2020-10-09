@@ -17,7 +17,7 @@ use tui::backend::TermionBackend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
 use tui::style::{Color, Modifier, Style};
 use tui::symbols::{line::VERTICAL, DOT};
-use tui::text::Spans;
+use tui::text::{Spans, Text};
 use tui::widgets::{Block, Borders, List, ListItem, Tabs, Widget};
 use tui::Terminal;
 
@@ -107,17 +107,23 @@ pub fn build_ui(
                     .as_ref(),
                 )
                 .split(f.size());
-            /*
-            let text_tab = ["hello"].iter().cloned().map(Spans::from).collect();
+            
+            
+            let text_tab = [text].iter().cloned().map(Spans::from).collect();
             let tweet_text = Tabs::new(text_tab).block(
                 Block::default()
                     .title(name)
                     .borders(Borders::ALL)
                     .style(Style::default().fg(Color::White)),
             );
+            
+            
+            /*
+            let tweet = Block::default()
+                .title(name)
+                .borders(Borders::ALL)
             */
-            let tweet = Block::default().title(name).borders(Borders::ALL);
-            f.render_widget(tweet, chunks[0]);
+            f.render_widget(tweet_text, chunks[0]);
         }
 
         /*=== timeline ===*/
