@@ -30,6 +30,9 @@ async fn main() {
     let mut start: usize = 0;
     let mut end: usize = 5;
 
+    // up and down arrows either 0: tabs or i:1-5: tweet[i]
+    let mut key_state: usize = 0;
+
     match timeline {
         Ok(t) => {
             tweets = t;
@@ -54,29 +57,29 @@ async fn main() {
                 }
             }
             Key::Left => {
-                if tab_key != 0 && !key_pressed {
+                if tab_key != 0 && key_pressed {
                     tab_key = tab_key - 1;
                 } else {
                     key_pressed = true;
                 }
             }
             Key::Up => {
-                if tab_key != 0 && !key_pressed {
-                    tab_key = tab_key - 1;
+                if key_state != 0 && key_pressed {
+                    key_state = key_state - 1;
                 } else {
                     key_pressed = true;
                 }
             }
             Key::Right => {
-                if tab_key != 2 && !key_pressed {
+                if tab_key != 2 && key_pressed {
                     tab_key = tab_key + 1;
                 } else {
                     key_pressed = true;
                 }
             }
             Key::Down => {
-                if tab_key != 2 && !key_pressed {
-                    tab_key = tab_key + 1;
+                if key_state != 5 && key_pressed {
+                    key_state = key_state + 1;
                 } else {
                     key_pressed = true;
                 }
@@ -102,7 +105,7 @@ async fn main() {
 
         // split tweets vector to show 5 of the 20 tweets
         let tweet_slice = util::tweet::slice_tweets(&tweets, start, end);
-        ui::ui::build_ui(tab_key, user, tweet_slice).expect("UI failed to build.");
+        ui::ui::build_ui(tab_key, user, tweet_slice, key_state).expect("UI failed to build.");
         stdout.flush().unwrap();
     }
 }

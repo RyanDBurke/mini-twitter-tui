@@ -30,6 +30,7 @@ pub fn build_ui(
     tab_key: usize,
     current_user: util::user::User,
     tweets: Vec<&util::tweet::Tweet>,
+    key_state: usize,
 ) -> std::result::Result<(), io::Error> {
     // clear terminal
     print!("\x1B[2J");
@@ -93,6 +94,10 @@ pub fn build_ui(
             let tweet = &tweets[i];
             let text = format!(" {} ", tweet.text);
             let name = format!(" @{} ", tweet.screen_name);
+            let mut color = Color::White;
+            if i+1 == key_state {
+                color = Color::Cyan;
+            }
 
             /*=== tweet ===*/
             let chunks = Layout::default()
@@ -114,7 +119,7 @@ pub fn build_ui(
                 Block::default()
                     .title(name)
                     .borders(Borders::ALL)
-                    .style(Style::default().fg(Color::White)),
+                    .style(Style::default().fg(color)),
             );
             
             
