@@ -66,6 +66,9 @@ pub async fn get_home_timeline(config: &config::Config, page_size: i32) -> Resul
             while i <= max {
 
                 if str_count == 65 || i == max {
+                    if all_text_vec.len() == 3 {
+                        break;
+                    }
                     all_text_vec.push(current_string);
                     current_string = String::from("");    
                     str_count = 0;                

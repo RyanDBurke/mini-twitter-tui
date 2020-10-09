@@ -108,13 +108,20 @@ pub fn build_ui(
                 };            
                 
                 // let text_tab = vec![Spans::from(full_text)];/*.iter().cloned();.map(Spans::from).collect();*/
-                //let text_tab = [ListItem::new(text.clone()), ListItem::new(full_text.clone())];
-                let text_len = tweet.all_text.len();
-                let mut text_tab = [ListItem; text_len];
+                let text_tab = [ListItem::new(text.clone()), ListItem::new(full_text.clone())];
+                //let text_tab = [ListItem::new(tweet.all_text[0].clone()), ListItem::new(full_text.clone())];
 
+                
+                /*
+                let text_len = tweet.all_text.len();
+                let mut text_tab = [ListItem::new(""); 3];
+
+                
                 for j in 0..text_len {
                     text_tab[j] = ListItem::new(tweet.all_text[j].clone());               
                 }
+                */
+                
 
                 let tweet_text = List::new(text_tab).block(
                     Block::default()
