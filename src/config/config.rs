@@ -64,7 +64,7 @@ impl Config {
                 println!("We'll have to reauthenticate before continuing.");
                 std::fs::remove_file("twitter_settings").unwrap();
             } else {
-                println!("[welcome, @{}, lets get to it]\n", username);
+                println!("[welcome, @{}, press any key to begin]\n", username);
             }
         } else {
             let request_token = egg_mode::auth::request_token(&con_token, "oob").await.unwrap();
@@ -103,7 +103,7 @@ impl Config {
             let mut f = std::fs::File::create("./src/config/settings").unwrap();
             f.write_all(config.as_bytes()).unwrap();
 
-            println!("[welcome, @{}, lets get to it]", username);
+            println!("[welcome, @{}, press any key to begin]\n", username);
         }
 
         //TODO: Is there a better way to query whether a file exists?

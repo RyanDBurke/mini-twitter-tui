@@ -12,25 +12,21 @@ use egg_mode::error::Result;
 use egg_mode::user;
 
 // tui library imports
-use std::io;
 use termion::raw::IntoRawMode;
 use tui::backend::TermionBackend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
-use tui::style::{Color, Style};
+use tui::style::{Color, Style, Modifier};
 use tui::symbols::{line::VERTICAL, DOT};
 use tui::text::Spans;
-use tui::widgets::{Block, Borders, Tabs, Widget};
+use tui::widgets::{Block, Borders, Tabs, Widget, List, ListItem};
 use tui::Terminal;
 
 // native library imports
 use std::vec::Vec;
+use std::io;
 
 // build our terminal UI
-pub async fn build_ui() -> std::result::Result<(), io::Error> {
-    // User is a User Struct
-    let config = config::Config::load().await;
-    let user = util::user::get_user(&config, &(config.screen_name));
-    let current_user = util::user::User::build(&config, user).await;
+pub fn build_ui(tab_key: usize, current_user: util::user::User) -> std::result::Result<(), io::Error> {
 
     // clear terminal
     print!("\x1B[2J");
@@ -42,13 +38,14 @@ pub async fn build_ui() -> std::result::Result<(), io::Error> {
 
     // build terminal
     terminal.draw(|f| {
-        // header
+
+        /*=== header ===*/
         let chunks = Layout::default()
             .direction(Direction::Vertical)
             .margin(1)
             .constraints(
                 [
-                    Constraint::Percentage(5), // reduced height of block 1
+                    Constraint::Percentage(5),
                     Constraint::Percentage(95),
                 ]
                 .as_ref(),
@@ -70,11 +67,10 @@ pub async fn build_ui() -> std::result::Result<(), io::Error> {
                     .borders(Borders::ALL),
             )
             .style(Style::default().fg(Color::White))
-            //.highlight_style(Style::default().fg(Color::Yellow))
             .divider(VERTICAL);
         f.render_widget(header, chunks[0]);
 
-        // tabs
+        /*=== tabs ===*/
         let chunks = Layout::default()
             .direction(Direction::Vertical)
             .horizontal_margin(1)
@@ -90,18 +86,37 @@ pub async fn build_ui() -> std::result::Result<(), io::Error> {
             .block(Block::default().title(" tabs ").borders(Borders::ALL))
             .style(Style::default().fg(Color::White))
             .highlight_style(Style::default().fg(Color::Cyan))
-            .select(0) // chooses which tab is selected
+            .select(tab_key) // chooses which tab is selected
             .divider(DOT);
         f.render_widget(tabs, chunks[0]);
 
-        // timeline
+        /*=== timeline ===*/
         let chunks = Layout::default()
             .direction(Direction::Vertical)
             .horizontal_margin(1)
             .vertical_margin(7)
-            .constraints([Constraint::Percentage(50), Constraint::Length(2)].as_ref())
+            .constraints([Constraint::Percentage(47), Constraint::Percentage(60)].as_ref())
             .split(f.size());
-        let body = Block::default().title(" home ").borders(Borders::ALL);
+        let tabs_list = ["home", "explore", "profile"]; // redefining tabs_list
+        let title = format!(" {} ", tabs_list[tab_key]);
+        let body = Block::default().title(title).borders(Borders::ALL);
         f.render_widget(body, chunks[0]);
+
+        /*=== controls === */
+        let chunks = Layout::default()
+            .direction(Direction::Vertical)
+            .horizontal_margin(1)
+            .vertical_margin(30)
+            .constraints([Constraint::Percentage(100), Constraint::Length(5)].as_ref())
+            .split(f.size());
+        let control_list = ["n: next tweet","q: quit", "i: info"]
+            .iter()
+            .cloned()
+            .map(Spans::from)
+            .collect();
+        let controls = Tabs::new(control_list)
+            .block(Block::default().title(" controls ").borders(Borders::ALL).style(Style::default().fg(Color::White)))
+            .divider(VERTICAL);
+        f.render_widget(controls, chunks[0]);
     })
 }
