@@ -30,8 +30,7 @@ pub async fn get_tweet(config: &config::Config, tweet_id: u64) -> Result<String>
 
 pub struct Tweet {
     pub text: String,
-    pub full_text: String,
-    pub all_text: Vec<String>,
+    pub all_text: [String; 4],
     pub screen_name: String,
     pub id: u64,
 }
@@ -54,24 +53,28 @@ pub async fn get_home_timeline(config: &config::Config, page_size: i32) -> Resul
         let tweet = &status;
 
         if let Some(ref user) = tweet.user {
-
             // limit tweets to 65 characters
             let tweet_char_vec: Vec<char> = tweet.text.chars().collect();
             let mut max: usize = tweet_char_vec.len();
 
-            let mut all_text_vec: Vec<String> = vec![];
-            let mut current_string = String::from("");
+            // trying to split up text into vec<string> entries of max 65 chars
+            let mut all_text_vec: [String; 4] = [
+                String::from(""),
+                String::from(""),
+                String::from(""),
+                String::from(""),
+            ];
+            let mut current_string = String::from(" ");
             let mut str_count = 0;
             let mut i = 0;
-            while i <= max {
-
+            let mut all_text_vec_iter = 0;
+            while i <= max && all_text_vec_iter < 4 {
                 if str_count == 65 || i == max {
-                    if all_text_vec.len() == 3 {
-                        break;
-                    }
-                    all_text_vec.push(current_string);
-                    current_string = String::from("");    
-                    str_count = 0;                
+                    current_string.push_str("\n");
+                    all_text_vec[all_text_vec_iter] = current_string;
+                    all_text_vec_iter = all_text_vec_iter + 1;
+                    current_string = String::from(" ");
+                    str_count = 0;
                 } else {
                     current_string.push(tweet_char_vec[i]);
                 }
@@ -85,10 +88,9 @@ pub async fn get_home_timeline(config: &config::Config, page_size: i32) -> Resul
 
                 let current_tweet = Tweet {
                     text: format!(
-                        "{}--",
+                        "{}...",
                         (tweet.text).chars().skip(0).take(max).collect::<String>()
                     ),
-                    full_text: format!("{}", (tweet.text).chars().skip(max).take(tweet_char_vec.len()).collect::<String>()/*(tweet.text)*/),
                     all_text: all_text_vec,
                     screen_name: format!("{}", user.screen_name),
                     id: tweet.id,
@@ -102,7 +104,6 @@ pub async fn get_home_timeline(config: &config::Config, page_size: i32) -> Resul
                         "{}",
                         (tweet.text).chars().skip(0).take(max).collect::<String>()
                     ),
-                    full_text: format!("{}", (tweet.text).chars().skip(max).take(tweet_char_vec.len()).collect::<String>()/*(tweet.text)*/),
                     all_text: all_text_vec,
                     screen_name: format!("{}", user.screen_name),
                     id: tweet.id,

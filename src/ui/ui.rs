@@ -42,7 +42,6 @@ pub fn build_ui(
 
     // build terminal
     terminal.draw(|f| {
-
         /*=== header ===*/
         let chunks = Rect {
             x: 1,
@@ -94,35 +93,28 @@ pub fn build_ui(
         for i in 0..(tweets.len()) {
             let tweet = &tweets[i];
             let text = format!(" {} ", tweet.text);
-            let full_text = format!(" {} ", tweet.full_text);
             let name = format!(" @{} ", tweet.screen_name);
             let mut color = Color::White;
+
+            // higlight current tweet and display its full-text
             if i + 1 == key_state {
+                // change color to Cyan
                 color = Color::Cyan;
-                let h = 3*tweet.all_text.len() as u16;
                 let chunks = Rect {
                     x: 82,
                     y: v_margin,
                     width: 70,
-                    height: h,
-                };            
-                
-                // let text_tab = vec![Spans::from(full_text)];/*.iter().cloned();.map(Spans::from).collect();*/
-                let text_tab = [ListItem::new(text.clone()), ListItem::new(full_text.clone())];
-                //let text_tab = [ListItem::new(tweet.all_text[0].clone()), ListItem::new(full_text.clone())];
+                    height: 6 as u16,
+                };
 
-                
-                /*
-                let text_len = tweet.all_text.len();
-                let mut text_tab = [ListItem::new(""); 3];
+                let text_tab = [
+                    ListItem::new(tweet.all_text[0].clone()),
+                    ListItem::new(tweet.all_text[1].clone()),
+                    ListItem::new(tweet.all_text[2].clone()),
+                    ListItem::new(tweet.all_text[3].clone()),
+                ];
 
-                
-                for j in 0..text_len {
-                    text_tab[j] = ListItem::new(tweet.all_text[j].clone());               
-                }
-                */
-                
-
+                // render
                 let tweet_text = List::new(text_tab).block(
                     Block::default()
                         .title(name.clone())
@@ -130,7 +122,6 @@ pub fn build_ui(
                         .style(Style::default().fg(color)),
                 );
                 f.render_widget(tweet_text, chunks);
-
             }
 
             /*=== single tweet ===*/
@@ -139,8 +130,8 @@ pub fn build_ui(
                 y: v_margin,
                 width: 74,
                 height: 3,
-            };            
-            
+            };
+
             let text_tab = [Span::raw(text)].iter().cloned().map(Spans::from).collect();
             let tweet_text = Tabs::new(text_tab).block(
                 Block::default()
@@ -186,6 +177,5 @@ pub fn build_ui(
             )
             .divider(VERTICAL);
         f.render_widget(controls, chunks);
-
     })
 }
