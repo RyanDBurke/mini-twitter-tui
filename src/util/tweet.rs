@@ -33,6 +33,7 @@ pub struct Tweet {
     pub screen_name: String,
     pub id: u64,
 }
+
 impl Tweet {
     pub fn to_string(self) -> String {
         let mut result = String::from("");
@@ -41,7 +42,7 @@ impl Tweet {
     }
 }
 
-// print timeline with page_size number of tweets [use .await]
+// return timeline with page_size number of tweets [use .await]
 pub async fn get_home_timeline(config: &config::Config, page_size: i32) -> Result<Vec<Tweet>> {
     let mut result: Vec<Tweet> = vec![];
 
@@ -51,6 +52,8 @@ pub async fn get_home_timeline(config: &config::Config, page_size: i32) -> Resul
         let tweet = &status;
 
         if let Some(ref user) = tweet.user {
+
+            // limit tweets to 70 characters
             let tweet_char_vec: Vec<char> = tweet.text.chars().collect();
             let mut max: usize = tweet_char_vec.len();
             if max > 70 {

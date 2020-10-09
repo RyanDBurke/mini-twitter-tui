@@ -42,6 +42,7 @@ pub fn build_ui(
 
     // build terminal
     terminal.draw(|f| {
+
         /*=== header ===*/
         let chunks = Layout::default()
             .direction(Direction::Vertical)
@@ -95,11 +96,11 @@ pub fn build_ui(
             let text = format!(" {} ", tweet.text);
             let name = format!(" @{} ", tweet.screen_name);
             let mut color = Color::White;
-            if i+1 == key_state {
+            if i + 1 == key_state {
                 color = Color::Cyan;
             }
 
-            /*=== tweet ===*/
+            /*=== single tweet ===*/
             let chunks = Layout::default()
                 .direction(Direction::Vertical)
                 .horizontal_margin(3)
@@ -121,13 +122,6 @@ pub fn build_ui(
                     .borders(Borders::ALL)
                     .style(Style::default().fg(color)),
             );
-            
-            
-            /*
-            let tweet = Block::default()
-                .title(name)
-                .borders(Borders::ALL)
-            */
             f.render_widget(tweet_text, chunks[0]);
         }
 
