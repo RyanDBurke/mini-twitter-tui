@@ -7,7 +7,7 @@ mod ui;
 mod util;
 
 // control imports
-use std::io::{stdin, stdout, Write};
+use std::io::{stdin, stdout};
 use termion::event::Key;
 use termion::input::TermRead;
 use termion::raw::IntoRawMode;
@@ -22,7 +22,7 @@ async fn main() {
 
     // std
     let stdin = stdin();
-    let mut stdout = stdout().into_raw_mode().unwrap();
+    let _stdout = stdout().into_raw_mode().unwrap();
 
     // for tweets
     let max_tweets = 50;
@@ -39,7 +39,7 @@ async fn main() {
 
     // show only 5 tweets at a time, please dont change this
     let mut start: usize = 0;
-    let mut end: usize = 5;
+    let mut end: usize = 12;
 
     // up and down arrows either 0: tabs or i:1-5: tweet[i]
     let mut key_state: usize = 0;
@@ -86,7 +86,7 @@ async fn main() {
                 }
             }
             Key::Down => {
-                if key_state != 5 && key_pressed {
+                if key_state != 12 && key_pressed {
                     key_state = key_state + 1;
                 } else {
                     key_pressed = true;

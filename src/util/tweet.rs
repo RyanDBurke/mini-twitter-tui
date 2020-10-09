@@ -30,6 +30,8 @@ pub async fn get_tweet(config: &config::Config, tweet_id: u64) -> Result<String>
 
 pub struct Tweet {
     pub text: String,
+    pub full_text: String,
+    pub all_text: Vec<String>,
     pub screen_name: String,
     pub id: u64,
 }
@@ -53,17 +55,38 @@ pub async fn get_home_timeline(config: &config::Config, page_size: i32) -> Resul
 
         if let Some(ref user) = tweet.user {
 
-            // limit tweets to 70 characters
+            // limit tweets to 65 characters
             let tweet_char_vec: Vec<char> = tweet.text.chars().collect();
             let mut max: usize = tweet_char_vec.len();
-            if max > 70 {
-                max = 70;
+
+            let mut all_text_vec: Vec<String> = vec![];
+            let mut current_string = String::from("");
+            let mut str_count = 0;
+            let mut i = 0;
+            while i <= max {
+
+                if str_count == 65 || i == max {
+                    all_text_vec.push(current_string);
+                    current_string = String::from("");    
+                    str_count = 0;                
+                } else {
+                    current_string.push(tweet_char_vec[i]);
+                }
+
+                str_count = str_count + 1;
+                i = i + 1;
+            }
+
+            if max > 65 {
+                max = 65;
 
                 let current_tweet = Tweet {
                     text: format!(
-                        "{}...",
+                        "{}--",
                         (tweet.text).chars().skip(0).take(max).collect::<String>()
                     ),
+                    full_text: format!("{}", (tweet.text).chars().skip(max).take(tweet_char_vec.len()).collect::<String>()/*(tweet.text)*/),
+                    all_text: all_text_vec,
                     screen_name: format!("{}", user.screen_name),
                     id: tweet.id,
                 };
@@ -76,6 +99,8 @@ pub async fn get_home_timeline(config: &config::Config, page_size: i32) -> Resul
                         "{}",
                         (tweet.text).chars().skip(0).take(max).collect::<String>()
                     ),
+                    full_text: format!("{}", (tweet.text).chars().skip(max).take(tweet_char_vec.len()).collect::<String>()/*(tweet.text)*/),
+                    all_text: all_text_vec,
                     screen_name: format!("{}", user.screen_name),
                     id: tweet.id,
                 };
