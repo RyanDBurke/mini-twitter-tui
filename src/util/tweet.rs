@@ -53,17 +53,20 @@ pub async fn get_home_timeline(config: &config::Config, page_size: i32) -> Resul
         let tweet = &status;
 
         if let Some(ref user) = tweet.user {
+
             // limit tweets to 65 characters
             let tweet_char_vec: Vec<char> = tweet.text.chars().collect();
             let mut max: usize = tweet_char_vec.len();
 
-            // trying to split up text into vec<string> entries of max 65 chars
-            let mut all_text_vec: [String; 4] = [
+            // trying to split up text into 4 [string] entries of max 65 chars each
+            let mut split_text: [String; 4] = [
                 String::from(""),
                 String::from(""),
                 String::from(""),
                 String::from(""),
             ];
+
+            // spaghetti code that fills all_text_vec
             let mut current_string = String::from(" ");
             let mut str_count = 0;
             let mut i = 0;
@@ -71,7 +74,7 @@ pub async fn get_home_timeline(config: &config::Config, page_size: i32) -> Resul
             while i <= max && all_text_vec_iter < 4 {
                 if str_count == 65 || i == max {
                     current_string.push_str("\n");
-                    all_text_vec[all_text_vec_iter] = current_string;
+                    split_text[all_text_vec_iter] = current_string;
                     all_text_vec_iter = all_text_vec_iter + 1;
                     current_string = String::from(" ");
                     str_count = 0;
@@ -83,15 +86,17 @@ pub async fn get_home_timeline(config: &config::Config, page_size: i32) -> Resul
                 i = i + 1;
             }
 
+            // build Tweet struct
             if max > 65 {
                 max = 65;
 
+                // truncated tweet
                 let current_tweet = Tweet {
                     text: format!(
                         "{}...",
                         (tweet.text).chars().skip(0).take(max).collect::<String>()
                     ),
-                    all_text: all_text_vec,
+                    all_text: split_text,
                     screen_name: format!("{}", user.screen_name),
                     id: tweet.id,
                 };
@@ -99,12 +104,14 @@ pub async fn get_home_timeline(config: &config::Config, page_size: i32) -> Resul
                 // add tweet to vector
                 result.push(current_tweet);
             } else {
+
+                // non-truncated tweet
                 let current_tweet = Tweet {
                     text: format!(
                         "{}",
                         (tweet.text).chars().skip(0).take(max).collect::<String>()
                     ),
-                    all_text: all_text_vec,
+                    all_text: split_text,
                     screen_name: format!("{}", user.screen_name),
                     id: tweet.id,
                 };
@@ -119,6 +126,7 @@ pub async fn get_home_timeline(config: &config::Config, page_size: i32) -> Resul
     Ok(result)
 }
 
+// takes array of tweets and slices 
 pub fn slice_tweets(tweets: &Vec<Tweet>, start: usize, end: usize) -> Vec<&Tweet> {
     let mut result: Vec<&Tweet> = vec![];
 

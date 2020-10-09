@@ -89,17 +89,20 @@ pub fn build_ui(
         f.render_widget(tabs, chunks);
 
         /*=== tweet(s) ===*/
-        let mut v_margin = 8;
+        let mut v_margin = 8; // vertical margin (increment by 4 each iteration)
         for i in 0..(tweets.len()) {
             let tweet = &tweets[i];
             let text = format!(" {} ", tweet.text);
             let name = format!(" @{} ", tweet.screen_name);
             let mut color = Color::White;
 
-            // higlight current tweet and display its full-text
+            /*=== higlight current tweet and display its full-text ===*/
             if i + 1 == key_state {
+
                 // change color to Cyan
                 color = Color::Cyan;
+
+                // build full-text tweet box
                 let chunks = Rect {
                     x: 82,
                     y: v_margin,
@@ -107,6 +110,7 @@ pub fn build_ui(
                     height: 6 as u16,
                 };
 
+                // each line of tweet is a ListItem
                 let text_tab = [
                     ListItem::new(tweet.all_text[0].clone()),
                     ListItem::new(tweet.all_text[1].clone()),
@@ -114,7 +118,7 @@ pub fn build_ui(
                     ListItem::new(tweet.all_text[3].clone()),
                 ];
 
-                // render
+                // render full-text tweet box
                 let tweet_text = List::new(text_tab).block(
                     Block::default()
                         .title(name.clone())
@@ -124,7 +128,7 @@ pub fn build_ui(
                 f.render_widget(tweet_text, chunks);
             }
 
-            /*=== single tweet ===*/
+            /*=== single tweet in feed ===*/
             let chunks = Rect {
                 x: 4,
                 y: v_margin,
@@ -132,6 +136,7 @@ pub fn build_ui(
                 height: 3,
             };
 
+            // build tweet in feed box and render
             let text_tab = [Span::raw(text)].iter().cloned().map(Spans::from).collect();
             let tweet_text = Tabs::new(text_tab).block(
                 Block::default()
@@ -141,6 +146,7 @@ pub fn build_ui(
             );
             f.render_widget(tweet_text, chunks);
 
+            // adjust vertical margin of tweet
             v_margin = v_margin + 4;
         }
 
