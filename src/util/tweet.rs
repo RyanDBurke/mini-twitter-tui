@@ -31,6 +31,7 @@ pub async fn get_tweet(config: &config::Config, tweet_id: u64) -> Result<String>
 pub struct Tweet {
     pub text: String,
     pub screen_name: String,
+    pub id: u64,
 }
 impl Tweet {
     pub fn to_string(self) -> String {
@@ -47,33 +48,51 @@ pub async fn get_home_timeline(config: &config::Config, page_size: i32) -> Resul
     let home = egg_mode::tweet::home_timeline(&config.token).with_page_size(page_size);
     let (_home, feed) = home.start().await?;
     for status in feed.iter() {
-        //let mut current_tweet = String::from("");
-
         let tweet = &status;
 
-        //let (month, day, year) = misc::date_parse(tweet);
         if let Some(ref user) = tweet.user {
-            /*
-            current_tweet = current_tweet
-                + &format!(
-                    "{} \n[(@{}) posted at {} {}, {}]\n================================",
-                    tweet.text, user.screen_name, month, day, year
-                );
-            */
+            let tweet_char_vec: Vec<char> = tweet.text.chars().collect();
+            let mut max: usize = tweet_char_vec.len();
+            if max > 70 {
+                max = 70;
 
-            let current_tweet = Tweet {
-                text: format!("{}", tweet.text),
-                screen_name: format!("{}", user.screen_name),
-            };
+                let current_tweet = Tweet {
+                    text: format!(
+                        "{}...",
+                        (tweet.text).chars().skip(0).take(max).collect::<String>()
+                    ),
+                    screen_name: format!("{}", user.screen_name),
+                    id: tweet.id,
+                };
 
-            // add tweet to vector
-            result.push(current_tweet);
+                // add tweet to vector
+                result.push(current_tweet);
+            } else {
+                let current_tweet = Tweet {
+                    text: format!(
+                        "{}",
+                        (tweet.text).chars().skip(0).take(max).collect::<String>()
+                    ),
+                    screen_name: format!("{}", user.screen_name),
+                    id: tweet.id,
+                };
+
+                // add tweet to vector
+                result.push(current_tweet);
+            }
         }
-
-        // add tweet to vector
-        //result.push(String::from(current_tweet));
     }
 
     // use match to extract timeline
     Ok(result)
+}
+
+pub fn slice_tweets(tweets: &Vec<Tweet>, start: usize, end: usize) -> Vec<&Tweet> {
+    let mut result: Vec<&Tweet> = vec![];
+
+    for t in start..end {
+        result.push(&tweets[t]);
+    }
+
+    result
 }

@@ -17,7 +17,7 @@ use tui::backend::TermionBackend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
 use tui::style::{Color, Modifier, Style};
 use tui::symbols::{line::VERTICAL, DOT};
-use tui::text::{Spans, Text};
+use tui::text::{Span, Spans, Text};
 use tui::widgets::{Block, Borders, List, ListItem, Tabs, Widget};
 use tui::Terminal;
 
@@ -29,7 +29,7 @@ use std::vec::Vec;
 pub fn build_ui(
     tab_key: usize,
     current_user: util::user::User,
-    tweets: Vec<util::tweet::Tweet>,
+    tweets: Vec<&util::tweet::Tweet>,
 ) -> std::result::Result<(), io::Error> {
     // clear terminal
     print!("\x1B[2J");
@@ -109,7 +109,7 @@ pub fn build_ui(
                 .split(f.size());
             
             
-            let text_tab = [text].iter().cloned().map(Spans::from).collect();
+            let text_tab = [Span::raw(text)].iter().cloned().map(Spans::from).collect();
             let tweet_text = Tabs::new(text_tab).block(
                 Block::default()
                     .title(name)
