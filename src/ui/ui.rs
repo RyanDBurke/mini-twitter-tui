@@ -31,6 +31,7 @@ pub fn build_ui(
     selected: &Vec<Vec<Style>>,
     current_user: util::user::User,
     tweets: Vec<&util::tweet::Tweet>,
+    info: bool,
 ) -> std::result::Result<(), io::Error> {
     // clear terminal
     print!("\x1B[2J");
@@ -115,6 +116,78 @@ pub fn build_ui(
             f.render_widget(controls, chunks);
         })
     }
+    // display info screen
+    else if info {
+        terminal.draw(|f| {
+            // info
+            let chunks = Rect {
+                x: 1,
+                y: 1,
+                width: 80,
+                height: 17,
+            };
+
+            let description_list = [
+                ListItem::new(" "),
+                ListItem::new(
+                Text::styled(
+                    " twitter-tui is a lightweight in-terminal user-interface for twitter.",
+                    Style::default().add_modifier(Modifier::ITALIC),
+                )),
+                ListItem::new(" "),
+                ListItem::new(" Hey, I'm Ryan,"),
+                ListItem::new(" "),
+                ListItem::new(
+                    "   An undergrad computer-science student at University of Maryland.",
+                ),
+                ListItem::new("   I created this because I read up on the rust programming language,"),
+                ListItem::new(
+                    "   thought it was cool, and decided to think of an interesting project",
+                ),
+                ListItem::new("   to help me learn rust. As fun as reading official language"),
+                ListItem::new("   documentation is (lol) I prefer just making something. The"),
+                ListItem::new("   program doesn't allow any write permissions, but maybe I'll"),
+                ListItem::new("   add that in one day :)"),
+                ListItem::new(" "),
+                ListItem::new(" GitHub: RyanDBurke"),
+                ListItem::new(" https://ryandburke.github.io/"),
+            ];
+
+            let description = List::new(description_list)
+                .block(
+                    Block::default()
+                        .title(" info ")
+                        .borders(Borders::ALL),
+                )
+                .style(Style::default().fg(Color::White));
+            f.render_widget(description, chunks);
+
+
+            // controls
+            let chunks = Rect {
+                x: 1,
+                y: 18,
+                width: 21,
+                height: 3,
+            };
+            let control_list = ["q: quit", "b: back"]
+                .iter()
+                .cloned()
+                .map(Spans::from)
+                .collect();
+            let controls = Tabs::new(control_list)
+                .block(
+                    Block::default()
+                        .title(" controls ")
+                        .borders(Borders::ALL)
+                        .style(Style::default().fg(Color::White)),
+                )
+                .divider(VERTICAL);
+            f.render_widget(controls, chunks);
+
+
+        })
+    }
     // terminal size looks good! let's build the terminal interface
     else {
         terminal.draw(|f| {
@@ -173,7 +246,7 @@ pub fn build_ui(
                 .style(Style::default().fg(Color::White));
             f.render_widget(sidebar, chunks);
 
-            // explore
+            // trending
             let chunks = Rect {
                 x: 3,
                 y: 10,
@@ -187,7 +260,7 @@ pub fn build_ui(
                 ListItem::new(Text::styled(" #settings", selected[0][6])),
             ];
             let explore = List::new(explore_items)
-                .block(Block::default().title(" explore ").borders(Borders::ALL))
+                .block(Block::default().title(" trending ").borders(Borders::ALL))
                 .style(Style::default().fg(Color::White));
             f.render_widget(explore, chunks);
 
@@ -205,43 +278,9 @@ pub fn build_ui(
             let mut y_margin = 6; // vertical margin (increment by 4 each iteration)
             for i in 0..(tweets.len()) {
                 let tweet = &tweets[i];
-                let text = format!(" {} ", tweet.text);
                 let name = format!(" @{} ", tweet.screen_name);
 
-                /*
-                /*=== higlight current tweet and display its full-text ===*/
-                if i + 1 == key_state {
-                    // change color to Cyan
-                    color = Color::rgb(29, 161, 242);
-
-                    // build full-text tweet box
-                    let chunks = Rect {
-                        x: 82,
-                        y: v_margin,
-                        width: 70,
-                        height: 6 as u16,
-                    };
-
-                    // each line of tweet is a ListItem
-                    let text_tab = [
-                        ListItem::new(tweet.all_text[0].clone()),
-                        ListItem::new(tweet.all_text[1].clone()),
-                        ListItem::new(tweet.all_text[2].clone()),
-                        ListItem::new(tweet.all_text[3].clone()),
-                    ];
-
-                    // render full-text tweet box
-                    let tweet_text = List::new(text_tab).block(
-                        Block::default()
-                            .title(name.clone())
-                            .borders(Borders::ALL)
-                            .style(Style::default().fg(color)),
-                    );
-                    f.render_widget(tweet_text, chunks);
-                }
-                */
-
-                /*=== single tweet in feed ===*/
+                // single tweet in timeline
                 let chunks = Rect {
                     x: 22,
                     y: y_margin,
@@ -249,25 +288,23 @@ pub fn build_ui(
                     height: 4, //4
                 };
 
-                // line 1 and 2 of tweet text
-                let line1 = tweet.all_text[0].clone();
-                let line2 = tweet.all_text[1].clone();
-
+                // tweet text
                 let tweet_item = [
-                    ListItem::new(Text::raw(line1)),
-                    ListItem::new(Text::raw(line2)),
+                    ListItem::new(Text::raw(tweet.text[0].clone())),
+                    ListItem::new(Text::raw(tweet.text[1].clone())),
                 ];
 
                 // build tweet in feed box and render
                 let tweet_text = List::new(tweet_item)
-                    .block(Block::default().title(name).borders(Borders::ALL).style(Style::default().fg(Color::White )));
+                    .block(Block::default().title(name).borders(Borders::ALL))
+                    .style(selected[1][i]);
+
                 f.render_widget(tweet_text, chunks);
 
                 // adjust vertical margin of tweet
                 y_margin = y_margin + 4;
             }
 
-            
             // search
             let chunks = Rect {
                 x: 81,
@@ -282,10 +319,10 @@ pub fn build_ui(
             let chunks = Rect {
                 x: 1,
                 y: 29,
-                width: 37,
+                width: 66,
                 height: 3,
             };
-            let control_list = ["n: next tweet", "q: quit", "i: info"]
+            let control_list = ["n: next tweet", "p: prev tweet", "r: refresh", "q: quit", "i: info"]
                 .iter()
                 .cloned()
                 .map(Spans::from)

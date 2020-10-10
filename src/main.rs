@@ -15,15 +15,13 @@ use tui::style::{Color, Style};
 
 #[tokio::main]
 async fn main() {
-
-
     // build config
     let config = config::config::Config::load().await;
 
     // std
     let stdin = stdin();
     let _stdout = stdout().into_raw_mode().unwrap();
-    
+
     // for tweets
     let max_tweets = 50;
     let timeline = util::tweet::get_home_timeline(&config, max_tweets).await;
@@ -36,7 +34,7 @@ async fn main() {
         }
         Err(e) => println!("{}", e),
     }
-    
+
     // show only 5 tweets at a time, please dont change this
     let mut start: usize = 0;
     let mut end: usize = 5;
@@ -44,27 +42,27 @@ async fn main() {
     // disregard first key pressed
     let mut key_pressed = false;
 
+    // display info screen
+    let mut info = false;
+
     // matrix holding style (keeps track of arrow position)
     let default_style = Style::default().fg(Color::White);
     let selected_style = Style::default().fg(Color::Rgb(29, 161, 242));
-    let mut selected : Vec<Vec<Style>> = vec![vec![default_style ; 7] ; 3];
+    let mut selected: Vec<Vec<Style>> = vec![vec![default_style; 7]; 3];
     let (mut x_pos, mut y_pos) = (0, 0); // keep track of position
     selected[x_pos][y_pos] = selected_style; // select first position
-    /*
-        selected[1][4] = "h"            
-        
-                  Y
-        [] [] [] [ ] [] [] []
-     X  [] [] [] [h] [] [] []
-        [] [] [] [ ] [] [] []
-    */
+                                             /*
+                                                 selected[1][4] = "h"
 
-
+                                                           Y
+                                                 [] [] [] [ ] [] [] []
+                                              X  [] [] [] [h] [] [] []
+                                                 [] [] [] [ ] [] [] []
+                                             */
 
     // build UI, read keys, and update
     for c in stdin.keys() {
         match c.unwrap() {
-
             // escape or quit
             Key::Char('q') => {
                 if !key_pressed {
@@ -83,46 +81,160 @@ async fn main() {
 
             // vertical keys
             Key::Up => {
-                if y_pos != 0 && key_pressed {
-                    // unhighlight old positivon
-                    selected[x_pos][y_pos] = default_style;
-                    y_pos = y_pos - 1;
-                    selected[x_pos][y_pos] = selected_style;
-                } else {
-                    key_pressed = true;
+                if !info {
+                    if y_pos != 0 && key_pressed {
+                        // unhighlight old positivon
+                        selected[x_pos][y_pos] = default_style;
+                        y_pos = y_pos - 1;
+                        selected[x_pos][y_pos] = selected_style;
+                    } else {
+                        key_pressed = true;
+                    }
                 }
             }
 
             Key::Down => {
-                if y_pos != 7 && key_pressed {
-                    // unhighlight old positivon
-                    selected[x_pos][y_pos] = default_style;
-                    y_pos = y_pos + 1;
-                    selected[x_pos][y_pos] = selected_style;
-                } else {
-                    key_pressed = true;
+                if !info {
+                    // see which column its in
+                    if x_pos == 0 {
+                        // left column
+                        if y_pos != 6 && key_pressed {
+                            // unhighlight old positivon
+                            selected[x_pos][y_pos] = default_style;
+                            y_pos = y_pos + 1;
+                            selected[x_pos][y_pos] = selected_style;
+                        } else {
+                            key_pressed = true;
+                        }
+                    } else if x_pos == 1 {
+                        // middle column
+                        if y_pos != 4 && key_pressed {
+                            // unhighlight old positivon
+                            selected[x_pos][y_pos] = default_style;
+                            y_pos = y_pos + 1;
+                            selected[x_pos][y_pos] = selected_style;
+                        } else {
+                            key_pressed = true;
+                        }
+                    } else {
+                        // right column
+                        if y_pos != 4 && key_pressed {
+                            // unhighlight old positivon
+                            selected[x_pos][y_pos] = default_style;
+                            y_pos = y_pos + 1;
+                            selected[x_pos][y_pos] = selected_style;
+                        } else {
+                            key_pressed = true;
+                        }
+                    }
                 }
             }
 
             // horizontal keys
             Key::Left => {
-                
+                if !info {
+                    if x_pos != 0 && key_pressed {
+                        // unhighlight old positivon
+                        selected[x_pos][y_pos] = default_style;
+                        x_pos = x_pos - 1;
+                        y_pos = 0;
+                        selected[x_pos][y_pos] = selected_style;
+                    } else {
+                        key_pressed = true;
+                    }
+                }
             }
 
             Key::Right => {
-                
+                if !info {
+                    if x_pos != 3 && key_pressed {
+                        // unhighlight old positivon
+                        selected[x_pos][y_pos] = default_style;
+                        x_pos = x_pos + 1;
+                        y_pos = 0;
+                        selected[x_pos][y_pos] = selected_style;
+                    } else {
+                        key_pressed = true;
+                    }
+                }
             }
+
+            // next tweet
             Key::Char('n') => {
+                if !info {
+                    if !key_pressed {
+                        key_pressed = true;
+                    } else {
+                        if end == 50 {
+                            start = 0;
+                            end = 5;
+                        } else {
+                            start = start + 1;
+                            end = end + 1;
+                        }
+                    }
+                }
+            }
+
+            // previous tweet
+            Key::Char('p') => {
+                if !info {
+                    if !key_pressed {
+                        key_pressed = true;
+                    } else {
+                        if start == 0 {
+                            start = 0;
+                            end = 5;
+                        } else {
+                            start = start - 1;
+                            end = end - 1;
+                        }
+                    }
+                }
+            }
+
+            // refresh timeline
+            Key::Char('r') => {
+                if !info {
+                    if !key_pressed {
+                        key_pressed = true;
+                    } else {
+                        let max_tweets = 50;
+                        let timeline = util::tweet::get_home_timeline(&config, max_tweets).await;
+
+                        // match with timeline
+                        match timeline {
+                            Ok(t) => {
+                                tweets = t;
+                            }
+                            Err(e) => {
+                                println!("Ran out of API calls lol, chill out for like 10m. {}", e)
+                            }
+                        }
+
+                        start = 0;
+                        end = 5;
+                    }
+                }
+            }
+
+            // info
+            Key::Char('i') => {
+                if !info {
+                    if !key_pressed {
+                        key_pressed = true;
+                    } else {
+                        info = true;
+                    }
+                }
+            }
+
+            // back
+            Key::Char('b') => {
                 if !key_pressed {
                     key_pressed = true;
                 } else {
-                    if end == 50 {
-                        start = 0;
-                        end = 5;
-                    } else {
-                        start = start + 1;
-                        end  = end + 1;
-                    }
+                    info = false;
                 }
             }
             _ => {}
@@ -136,8 +248,7 @@ async fn main() {
         let tweet_slice = util::tweet::slice_tweets(&tweets, start, end);
 
         // build UI
-        ui::ui::build_ui(&selected, user, tweet_slice).expect("UI failed to build.");
+        ui::ui::build_ui(&selected, user, tweet_slice, info).expect("UI failed to build.");
         //stdout.flush().unwrap();
     }
-
 }

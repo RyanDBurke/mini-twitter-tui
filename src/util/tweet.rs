@@ -29,18 +29,9 @@ pub async fn get_tweet(config: &config::Config, tweet_id: u64) -> Result<String>
 }
 
 pub struct Tweet {
-    pub text: String,
-    pub all_text: [String; 2],
+    pub text: [String; 2],
     pub screen_name: String,
     pub id: u64,
-}
-
-impl Tweet {
-    pub fn to_string(self) -> String {
-        let mut result = String::from("");
-        result = result + &format!("{} \n[(@{})\n", self.text, self.screen_name);
-        result
-    }
 }
 
 // return timeline with page_size number of tweets [use .await]
@@ -53,20 +44,11 @@ pub async fn get_home_timeline(config: &config::Config, page_size: i32) -> Resul
         let tweet = &status;
 
         if let Some(ref user) = tweet.user {
-            let tweet_chars: Vec<char> = tweet.text.chars().collect(); // tweet in vec<char>
-            let total_len: usize = tweet_chars.len(); // total chars            
+            //let tweet_chars: Vec<char> = tweet.text.chars().collect(); // tweet in vec<char>          
 
             // build Tweet struct
             let current_tweet = Tweet {
-                text: format!(
-                    "{}",
-                    (tweet.text)
-                        .chars()
-                        .skip(0)
-                        .take(total_len)
-                        .collect::<String>()
-                ),
-                all_text: split_tweet(tweet_chars),
+                text: split_tweet(tweet.text.chars().collect()),
                 screen_name: format!("{}", user.screen_name),
                 id: tweet.id,
             };
@@ -110,6 +92,10 @@ pub fn split_tweet(chars: Vec<char>) -> [String; 2] {
         current.push(chars[pos]); // push char to current string
         current_len = current_len + 1;
         pos = pos + 1;
+    }
+
+    if result[1].chars().collect::<String>().len() >= 49 {
+        result[1] = format!("{}...", result[1]);    
     }
 
     return result;
