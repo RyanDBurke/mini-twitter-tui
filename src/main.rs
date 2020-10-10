@@ -11,11 +11,11 @@ use std::io::{stdin, stdout};
 use termion::event::Key;
 use termion::input::TermRead;
 use termion::raw::IntoRawMode;
+use tui::style::{Color, Style};
 
 #[tokio::main]
 async fn main() {
-    // use arrows to navigate through tabs
-    let mut tab_key: usize = 0;
+
 
     // build config
     let config = config::config::Config::load().await;
@@ -23,7 +23,7 @@ async fn main() {
     // std
     let stdin = stdin();
     let _stdout = stdout().into_raw_mode().unwrap();
-
+    
     // for tweets
     let max_tweets = 50;
     let timeline = util::tweet::get_home_timeline(&config, max_tweets).await;
@@ -36,20 +36,36 @@ async fn main() {
         }
         Err(e) => println!("{}", e),
     }
-
+    
     // show only 5 tweets at a time, please dont change this
     let mut start: usize = 0;
-    let mut end: usize = 12;
-
-    // up and down arrows either 0: tabs or i:1-5: tweet[i]
-    let mut key_state: usize = 0;
+    let mut end: usize = 5;
 
     // disregard first key pressed
     let mut key_pressed = false;
 
+    // matrix holding style (keeps track of arrow position)
+    let default_style = Style::default().fg(Color::White);
+    let selected_style = Style::default().fg(Color::Rgb(29, 161, 242));
+    let mut selected : Vec<Vec<Style>> = vec![vec![default_style ; 7] ; 3];
+    let (mut x_pos, mut y_pos) = (0, 0); // keep track of position
+    selected[x_pos][y_pos] = selected_style; // select first position
+    /*
+        selected[1][4] = "h"            
+        
+                  Y
+        [] [] [] [ ] [] [] []
+     X  [] [] [] [h] [] [] []
+        [] [] [] [ ] [] [] []
+    */
+
+
+
     // build UI, read keys, and update
     for c in stdin.keys() {
         match c.unwrap() {
+
+            // escape or quit
             Key::Char('q') => {
                 if !key_pressed {
                     key_pressed = true;
@@ -64,39 +80,43 @@ async fn main() {
                     break;
                 }
             }
-            Key::Left => {
-                if tab_key != 0 && key_pressed {
-                    tab_key = tab_key - 1;
-                } else {
-                    key_pressed = true;
-                }
-            }
+
+            // vertical keys
             Key::Up => {
-                if key_state != 0 && key_pressed {
-                    key_state = key_state - 1;
+                if y_pos != 0 && key_pressed {
+                    // unhighlight old positivon
+                    selected[x_pos][y_pos] = default_style;
+                    y_pos = y_pos - 1;
+                    selected[x_pos][y_pos] = selected_style;
                 } else {
                     key_pressed = true;
                 }
             }
-            Key::Right => {
-                if tab_key != 2 && key_pressed {
-                    tab_key = tab_key + 1;
-                } else {
-                    key_pressed = true;
-                }
-            }
+
             Key::Down => {
-                if key_state != 12 && key_pressed {
-                    key_state = key_state + 1;
+                if y_pos != 7 && key_pressed {
+                    // unhighlight old positivon
+                    selected[x_pos][y_pos] = default_style;
+                    y_pos = y_pos + 1;
+                    selected[x_pos][y_pos] = selected_style;
                 } else {
                     key_pressed = true;
                 }
+            }
+
+            // horizontal keys
+            Key::Left => {
+                
+            }
+
+            Key::Right => {
+                
             }
             Key::Char('n') => {
                 if !key_pressed {
                     key_pressed = true;
                 } else {
-                    if end + 1 == 51 {
+                    if end == 50 {
                         start = 0;
                         end = 5;
                     } else {
@@ -116,7 +136,8 @@ async fn main() {
         let tweet_slice = util::tweet::slice_tweets(&tweets, start, end);
 
         // build UI
-        ui::ui::build_ui(tab_key, user, tweet_slice, key_state).expect("UI failed to build.");
+        ui::ui::build_ui(&selected, user, tweet_slice).expect("UI failed to build.");
         //stdout.flush().unwrap();
     }
+
 }

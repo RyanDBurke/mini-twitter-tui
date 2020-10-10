@@ -1,6 +1,10 @@
 # twitter-tui
 
-lightweight in-terminal user interface for twitter [written in Rust] 
+lightweight in-terminal user interface for twitter [written in Rust]
+
+# recommended terminal size:
+Width: 117
+Height: 30
 
 ## File Structure <a name="structure"></a>
     twitter-tui

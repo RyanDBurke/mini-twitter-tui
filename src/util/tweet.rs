@@ -30,7 +30,7 @@ pub async fn get_tweet(config: &config::Config, tweet_id: u64) -> Result<String>
 
 pub struct Tweet {
     pub text: String,
-    pub all_text: [String; 4],
+    pub all_text: [String; 2],
     pub screen_name: String,
     pub id: u64,
 }
@@ -53,72 +53,26 @@ pub async fn get_home_timeline(config: &config::Config, page_size: i32) -> Resul
         let tweet = &status;
 
         if let Some(ref user) = tweet.user {
-
-            // limit tweets to 65 characters
-            let tweet_char_vec: Vec<char> = tweet.text.chars().collect();
-            let mut max: usize = tweet_char_vec.len();
-
-            // trying to split up text into 4 [string] entries of max 65 chars each
-            let mut split_text: [String; 4] = [
-                String::from(""),
-                String::from(""),
-                String::from(""),
-                String::from(""),
-            ];
-
-            // spaghetti code that fills all_text_vec
-            let mut current_string = String::from(" ");
-            let mut str_count = 0;
-            let mut i = 0;
-            let mut all_text_vec_iter = 0;
-            while i <= max && all_text_vec_iter < 4 {
-                if str_count == 65 || i == max {
-                    current_string.push_str("\n");
-                    split_text[all_text_vec_iter] = current_string;
-                    all_text_vec_iter = all_text_vec_iter + 1;
-                    current_string = String::from(" ");
-                    str_count = 0;
-                } else {
-                    current_string.push(tweet_char_vec[i]);
-                }
-
-                str_count = str_count + 1;
-                i = i + 1;
-            }
+            let tweet_chars: Vec<char> = tweet.text.chars().collect(); // tweet in vec<char>
+            let total_len: usize = tweet_chars.len(); // total chars            
 
             // build Tweet struct
-            if max > 65 {
-                max = 65;
+            let current_tweet = Tweet {
+                text: format!(
+                    "{}",
+                    (tweet.text)
+                        .chars()
+                        .skip(0)
+                        .take(total_len)
+                        .collect::<String>()
+                ),
+                all_text: split_tweet(tweet_chars),
+                screen_name: format!("{}", user.screen_name),
+                id: tweet.id,
+            };
 
-                // truncated tweet
-                let current_tweet = Tweet {
-                    text: format!(
-                        "{}...",
-                        (tweet.text).chars().skip(0).take(max).collect::<String>()
-                    ),
-                    all_text: split_text,
-                    screen_name: format!("{}", user.screen_name),
-                    id: tweet.id,
-                };
-
-                // add tweet to vector
-                result.push(current_tweet);
-            } else {
-
-                // non-truncated tweet
-                let current_tweet = Tweet {
-                    text: format!(
-                        "{}",
-                        (tweet.text).chars().skip(0).take(max).collect::<String>()
-                    ),
-                    all_text: split_text,
-                    screen_name: format!("{}", user.screen_name),
-                    id: tweet.id,
-                };
-
-                // add tweet to vector
-                result.push(current_tweet);
-            }
+            // add tweet to vector
+            result.push(current_tweet);
         }
     }
 
@@ -126,7 +80,42 @@ pub async fn get_home_timeline(config: &config::Config, page_size: i32) -> Resul
     Ok(result)
 }
 
-// takes array of tweets and slices 
+pub fn split_tweet(chars: Vec<char>) -> [String; 2] {
+    // stash our tweet-lines
+    let mut result: [String; 2] = [String::from(""), String::from("")];
+
+    // total chars
+    let total_len: usize = chars.len();
+
+    // max string length
+    let max = 49;
+
+    let mut current = String::from(" ");
+    let mut current_len = 0;
+    let mut pos = 0;
+    let mut result_iter = 0;
+
+    while pos < total_len && result_iter < 2 {
+        if current_len == max {
+            result[result_iter] = current; // push string
+            result_iter = result_iter + 1; // update result iter
+            current = String::from(" "); // clear current for next iteration
+            current_len = 0; // reset curren len
+        } else if pos == total_len - 1 {
+            current.push(chars[pos]); // push char to current string
+            result[result_iter] = current; // push string
+            break;
+        }
+        
+        current.push(chars[pos]); // push char to current string
+        current_len = current_len + 1;
+        pos = pos + 1;
+    }
+
+    return result;
+}
+
+// takes array of tweets and slices
 pub fn slice_tweets(tweets: &Vec<Tweet>, start: usize, end: usize) -> Vec<&Tweet> {
     let mut result: Vec<&Tweet> = vec![];
 
