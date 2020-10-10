@@ -7,14 +7,14 @@ mod ui;
 mod util;
 
 // control imports
-use std::io::{stdin, stdout};
+use std::io::{stdin, stdout, Error};
 use termion::event::Key;
 use termion::input::TermRead;
 use termion::raw::IntoRawMode;
 use tui::style::{Color, Style};
 
 #[tokio::main]
-async fn main() {
+async fn main() -> std::result::Result<(), Error> {
     // build config
     let config = config::config::Config::load().await;
 
@@ -32,7 +32,10 @@ async fn main() {
         Ok(t) => {
             tweets = t;
         }
-        Err(e) => println!("{}", e),
+        Err(_) => {
+            println!("Ran out of API calls lol, chill out for like 3m.");
+            return Ok(());
+        }
     }
 
     // show only 5 tweets at a time, please dont change this
@@ -207,8 +210,9 @@ async fn main() {
                             Ok(t) => {
                                 tweets = t;
                             }
-                            Err(e) => {
-                                println!("Ran out of API calls lol, chill out for like 10m. {}", e)
+                            Err(_) => {
+                                println!("Ran out of API calls lol, chill out for like 3m.");
+                                return Ok(());
                             }
                         }
 
@@ -251,4 +255,6 @@ async fn main() {
         ui::ui::build_ui(&selected, user, tweet_slice, info).expect("UI failed to build.");
         //stdout.flush().unwrap();
     }
+
+    Ok(())
 }
