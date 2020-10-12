@@ -27,6 +27,7 @@ async fn main() -> std::result::Result<(), Error> {
     let timeline = util::tweet::get_home_timeline(&config, max_tweets).await;
     let mut tweets: Vec<util::tweet::Tweet>;
 
+    
     // match with timeline
     match timeline {
         Ok(t) => {
@@ -37,6 +38,9 @@ async fn main() -> std::result::Result<(), Error> {
             return Ok(());
         }
     }
+    
+
+    // tweets = util::tweet::fake_tweets(50);
 
     // show only 5 tweets at a time, please dont change this
     let mut start: usize = 0;
@@ -202,6 +206,7 @@ async fn main() -> std::result::Result<(), Error> {
                     if !key_pressed {
                         key_pressed = true;
                     } else {
+                        
                         let max_tweets = 50;
                         let timeline = util::tweet::get_home_timeline(&config, max_tweets).await;
 
@@ -218,6 +223,7 @@ async fn main() -> std::result::Result<(), Error> {
 
                         start = 0;
                         end = 5;
+                        
                     }
                 }
             }

@@ -1171,6 +1171,7 @@ version = "0.1.0"
 dependencies = [
  "chrono",
  "egg-mode",
+ "rand",
  "term_size",
  "termion",
  "tokio",

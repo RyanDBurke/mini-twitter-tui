@@ -6,6 +6,7 @@
 use crate::config::config;
 use crate::util::misc;
 use egg_mode::error::Result;
+use rand::Rng;
 
 // print single tweet [run with .await]
 pub async fn get_tweet(config: &config::Config, tweet_id: u64) -> Result<String> {
@@ -110,4 +111,28 @@ pub fn slice_tweets(tweets: &Vec<Tweet>, start: usize, end: usize) -> Vec<&Tweet
     }
 
     result
+}
+
+// generate fake tweets
+pub fn fake_tweets(amt: i32) -> Vec<Tweet> {
+
+    let mut tweets : Vec<Tweet> = vec![];
+    let mut rng = rand::thread_rng();
+
+    for i in 0..amt {
+        // create tweet
+        let tweet = Tweet {
+            text: [
+                    String::from("Lorem ipsum dolor sit amet,"), 
+                    String::from("consectetur adipiscing elit."),
+                ],
+            screen_name: format!("ryan_{}", i),
+            id: rng.gen_range(0, 200),
+        };
+
+        // add it to tweets
+        tweets.push(tweet);
+    }
+
+    tweets
 }
