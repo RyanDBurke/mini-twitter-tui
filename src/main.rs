@@ -25,7 +25,7 @@ async fn main() -> std::result::Result<(), Error> {
     // for tweets
     let max_tweets = 50;
     let timeline = util::tweet::get_home_timeline(&config, max_tweets).await;
-    let mut tweets: Vec<util::tweet::Tweet> = vec![];
+    let mut tweets: Vec<util::tweet::Tweet>;
 
     // match with timeline
     match timeline {
