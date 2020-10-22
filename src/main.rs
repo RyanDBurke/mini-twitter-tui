@@ -7,7 +7,8 @@ mod ui;
 mod util;
 
 // control imports
-use std::io::{stdin, stdout, Error};
+use std::io::{ stdin, stdout, Error};
+use std::env;
 use termion::event::Key;
 use termion::input::TermRead;
 use termion::raw::IntoRawMode;
@@ -22,35 +23,43 @@ async fn main() -> std::result::Result<(), Error> {
     let stdin = stdin();
     let _stdout = stdout().into_raw_mode().unwrap();
 
-    // produce num_fake tweets
-    let num_fake : i32 = 50;
-    let mut tweets = util::tweet::fake_tweets(num_fake);
+    // command ags
+    let args: Vec<String> = env::args().collect();
 
-    /*
-    // for tweets
-    let max_tweets = 20;
-    let timeline = util::tweet::get_home_timeline(&config, max_tweets).await;
-    let mut tweets: Vec<util::tweet::Tweet>;
-
-    
-    // match with timeline
-    match timeline {
-        Ok(t) => {
-            tweets = t;
-        }
-        Err(_) => {
-            println!("Ran out of API calls lol, chill out for like 3m.");
-            return Ok(());
+    // boolean for producing fake tweets
+    let mut produce_fake_tweets = false;
+    if args.len() > 1 {
+        if &args[1] == "fake-tweets" {
+            produce_fake_tweets = true;
         }
     }
-    */
+
+    // holds tweets
+    let mut tweets: Vec<util::tweet::Tweet>;
+    if produce_fake_tweets {
+        // produce num_fake tweets
+        let num_fake: i32 = 50;
+        tweets = util::tweet::fake_tweets(num_fake);
+    } else {
+        // for tweets
+        let max_tweets = 20;
+        let timeline = util::tweet::get_home_timeline(&config, max_tweets).await;
+
+        // match with timeline
+        match timeline {
+            Ok(t) => {
+                tweets = t;
+            }
+            Err(_) => {
+                println!("Ran out of API calls lol, chill out for like 3m.");
+                return Ok(());
+            }
+        }
+    }
 
     // show only 5 tweets at a time, please dont change this
     let mut start: usize = 0;
     let mut end: usize = start + 5;
-
-    // disregard first key pressed
-    let mut key_pressed = false;
 
     // display info screen
     let mut info = false;
@@ -75,30 +84,20 @@ async fn main() -> std::result::Result<(), Error> {
         match c.unwrap() {
             // escape or quit
             Key::Char('q') => {
-                if !key_pressed {
-                    key_pressed = true;
-                } else {
-                    break;
-                }
+                break;
             }
             Key::Esc => {
-                if !key_pressed {
-                    key_pressed = true;
-                } else {
-                    break;
-                }
+                break;
             }
 
             // vertical keys
             Key::Up => {
                 if !info {
-                    if y_pos != 0 && key_pressed {
+                    if y_pos != 0 {
                         // unhighlight old positivon
                         selected[x_pos][y_pos] = default_style;
                         y_pos = y_pos - 1;
                         selected[x_pos][y_pos] = selected_style;
-                    } else {
-                        key_pressed = true;
                     }
                 }
             }
@@ -108,33 +107,27 @@ async fn main() -> std::result::Result<(), Error> {
                     // see which column its in
                     if x_pos == 0 {
                         // left column
-                        if y_pos != 6 && key_pressed {
+                        if y_pos != 6 {
                             // unhighlight old positivon
                             selected[x_pos][y_pos] = default_style;
                             y_pos = y_pos + 1;
                             selected[x_pos][y_pos] = selected_style;
-                        } else {
-                            key_pressed = true;
                         }
                     } else if x_pos == 1 {
                         // middle column
-                        if y_pos != 4 && key_pressed {
+                        if y_pos != 4 {
                             // unhighlight old positivon
                             selected[x_pos][y_pos] = default_style;
                             y_pos = y_pos + 1;
                             selected[x_pos][y_pos] = selected_style;
-                        } else {
-                            key_pressed = true;
                         }
                     } else {
                         // right column
-                        if y_pos != 4 && key_pressed {
+                        if y_pos != 4 {
                             // unhighlight old positivon
                             selected[x_pos][y_pos] = default_style;
                             y_pos = y_pos + 1;
                             selected[x_pos][y_pos] = selected_style;
-                        } else {
-                            key_pressed = true;
                         }
                     }
                 }
@@ -143,28 +136,24 @@ async fn main() -> std::result::Result<(), Error> {
             // horizontal keys
             Key::Left => {
                 if !info {
-                    if x_pos != 0 && key_pressed {
+                    if x_pos != 0 {
                         // unhighlight old positivon
                         selected[x_pos][y_pos] = default_style;
                         x_pos = x_pos - 1;
                         y_pos = 0;
                         selected[x_pos][y_pos] = selected_style;
-                    } else {
-                        key_pressed = true;
                     }
                 }
             }
 
             Key::Right => {
                 if !info {
-                    if x_pos != 3 && key_pressed {
+                    if x_pos != 3 {
                         // unhighlight old positivon
                         selected[x_pos][y_pos] = default_style;
                         x_pos = x_pos + 1;
                         y_pos = 0;
                         selected[x_pos][y_pos] = selected_style;
-                    } else {
-                        key_pressed = true;
                     }
                 }
             }
@@ -172,16 +161,12 @@ async fn main() -> std::result::Result<(), Error> {
             // next tweet
             Key::Char('n') => {
                 if !info {
-                    if !key_pressed {
-                        key_pressed = true;
+                    if end == 50 {
+                        start = 0;
+                        end = 5;
                     } else {
-                        if end == 50 {
-                            start = 0;
-                            end = 5;
-                        } else {
-                            start = start + 1;
-                            end = end + 1;
-                        }
+                        start = start + 1;
+                        end = end + 1;
                     }
                 }
             }
@@ -189,16 +174,12 @@ async fn main() -> std::result::Result<(), Error> {
             // previous tweet
             Key::Char('p') => {
                 if !info {
-                    if !key_pressed {
-                        key_pressed = true;
+                    if start == 0 {
+                        start = 0;
+                        end = 5;
                     } else {
-                        if start == 0 {
-                            start = 0;
-                            end = 5;
-                        } else {
-                            start = start - 1;
-                            end = end - 1;
-                        }
+                        start = start - 1;
+                        end = end - 1;
                     }
                 }
             }
@@ -206,11 +187,7 @@ async fn main() -> std::result::Result<(), Error> {
             // refresh timeline
             Key::Char('r') => {
                 if !info {
-                    if !key_pressed {
-                        key_pressed = true;
-                    } else {
-                        
-                        /*
+                    if  !produce_fake_tweets {
                         let max_tweets = 20;
                         let timeline = util::tweet::get_home_timeline(&config, max_tweets).await;
 
@@ -227,8 +204,6 @@ async fn main() -> std::result::Result<(), Error> {
 
                         start = 0;
                         end = 5;
-                        */
-                        
                     }
                 }
             }
@@ -236,21 +211,13 @@ async fn main() -> std::result::Result<(), Error> {
             // info
             Key::Char('i') => {
                 if !info {
-                    if !key_pressed {
-                        key_pressed = true;
-                    } else {
-                        info = true;
-                    }
+                    info = true;
                 }
             }
 
             // back
             Key::Char('b') => {
-                if !key_pressed {
-                    key_pressed = true;
-                } else {
-                    info = false;
-                }
+                info = false;
             }
             _ => {}
         }
