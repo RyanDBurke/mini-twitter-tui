@@ -126,7 +126,7 @@ pub fn fake_tweets(amt: i32) -> Vec<Tweet> {
                     String::from("Lorem ipsum dolor sit amet,"), 
                     String::from("consectetur adipiscing elit."),
                 ],
-            screen_name: format!("ryan_{}", i),
+            screen_name: format!("bob_{}", i),
             id: rng.gen_range(0, 200),
         };
 

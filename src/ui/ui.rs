@@ -15,11 +15,11 @@ use term_size;
 // tui library imports
 use termion::raw::IntoRawMode;
 use tui::backend::TermionBackend;
-use tui::layout::{Constraint, Direction, Layout, Rect};
+use tui::layout::{Constraint, Direction, Layout, Rect, Alignment};
 use tui::style::{Color, Modifier, Style};
 use tui::symbols::{line::VERTICAL, DOT};
 use tui::text::{Span, Spans, Text};
-use tui::widgets::{Block, Borders, List, ListItem, ListState, Tabs, Widget};
+use tui::widgets::{Paragraph, Block, Borders, List, ListItem, ListState, Tabs, Widget};
 use tui::Terminal;
 
 // native library imports
@@ -71,7 +71,7 @@ pub fn build_ui(
                 .divider(VERTICAL);
             f.render_widget(size_error, chunks);
 
-            // recommended
+            // recommended terminal size msg
             let chunks = Rect {
                 x: 1,
                 y: 4,
@@ -127,6 +127,7 @@ pub fn build_ui(
                 height: 17,
             };
 
+            /*
             let description_list = [
                 ListItem::new(" "),
                 ListItem::new(
@@ -152,13 +153,65 @@ pub fn build_ui(
                 ListItem::new(" GitHub: RyanDBurke"),
                 ListItem::new(" https://ryandburke.github.io/"),
             ];
+            */
 
-            let description = List::new(description_list)
+            let description_list = vec![
+                Spans::from(vec![
+                    Span::styled("twitter-tui is a lightweight terminal user-interface for twitter", Style::default().add_modifier(Modifier::ITALIC))
+                ]),
+                Spans::from(vec![
+                    Span::raw("")
+                ]),
+                Spans::from(vec![
+                    Span::raw("")
+                ]),
+                Spans::from(vec![
+                    Span::raw("hey, im ryan")
+                ]),
+                Spans::from(vec![
+                    Span::raw("An undergrad computer-science student at University of Maryland.")
+                ]),
+                Spans::from(vec![
+                    Span::raw("I created this because I read up on the rust programming langua-")
+                ]),
+                Spans::from(vec![
+                    Span::raw("ge, thought it was cool, and decided to think of an interesting-")
+                ]),
+                Spans::from(vec![
+                    Span::raw("project to help me learn rust. As fun as reading official langu-")
+                ]),
+                Spans::from(vec![
+                    Span::raw("age documentation is (lol) I prefer just making something. The -")
+                ]),
+                Spans::from(vec![
+                    Span::raw("program doesn't allow any write permissions, but maybe I'll add-")
+                ]),
+                Spans::from(vec![
+                    Span::raw("that in one day :)")
+                ]),                 
+                Spans::from(vec![
+                    Span::raw("")
+                ]),
+                Spans::from(vec![
+                    Span::raw("")
+                ]),
+                Spans::from(vec![
+                    Span::styled("Github: RyanDBurke", Style::default().add_modifier(Modifier::ITALIC))
+                
+                ]),
+                Spans::from(vec![
+                    Span::styled("https://ryandburke.github.io/", Style::default().add_modifier(Modifier::ITALIC))
+                
+                ])
+            ];
+
+            let description = Paragraph::new(description_list)
                 .block(
                     Block::default()
                         .title(" info ")
                         .borders(Borders::ALL),
                 )
+                .alignment(Alignment::Center)
                 .style(Style::default().fg(Color::White));
             f.render_widget(description, chunks);
 

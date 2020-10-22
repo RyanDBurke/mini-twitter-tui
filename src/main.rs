@@ -22,8 +22,13 @@ async fn main() -> std::result::Result<(), Error> {
     let stdin = stdin();
     let _stdout = stdout().into_raw_mode().unwrap();
 
+    // produce num_fake tweets
+    let num_fake : i32 = 50;
+    let mut tweets = util::tweet::fake_tweets(num_fake);
+
+    /*
     // for tweets
-    let max_tweets = 50;
+    let max_tweets = 20;
     let timeline = util::tweet::get_home_timeline(&config, max_tweets).await;
     let mut tweets: Vec<util::tweet::Tweet>;
 
@@ -38,13 +43,11 @@ async fn main() -> std::result::Result<(), Error> {
             return Ok(());
         }
     }
-    
-
-    // tweets = util::tweet::fake_tweets(50);
+    */
 
     // show only 5 tweets at a time, please dont change this
     let mut start: usize = 0;
-    let mut end: usize = 5;
+    let mut end: usize = start + 5;
 
     // disregard first key pressed
     let mut key_pressed = false;
@@ -201,13 +204,13 @@ async fn main() -> std::result::Result<(), Error> {
             }
 
             // refresh timeline
-            Key::Char('r') => {
+            Key::Char('p') => {
                 if !info {
                     if !key_pressed {
                         key_pressed = true;
                     } else {
                         
-                        let max_tweets = 50;
+                        let max_tweets = 20;
                         let timeline = util::tweet::get_home_timeline(&config, max_tweets).await;
 
                         // match with timeline
