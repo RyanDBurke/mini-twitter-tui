@@ -204,12 +204,13 @@ async fn main() -> std::result::Result<(), Error> {
             }
 
             // refresh timeline
-            Key::Char('p') => {
+            Key::Char('r') => {
                 if !info {
                     if !key_pressed {
                         key_pressed = true;
                     } else {
                         
+                        /*
                         let max_tweets = 20;
                         let timeline = util::tweet::get_home_timeline(&config, max_tweets).await;
 
@@ -226,6 +227,7 @@ async fn main() -> std::result::Result<(), Error> {
 
                         start = 0;
                         end = 5;
+                        */
                         
                     }
                 }
