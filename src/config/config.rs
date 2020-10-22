@@ -30,6 +30,29 @@ impl Config {
     /// the output which doesn't seem worthwhile
     pub async fn load_inner() -> Option<Self> {
         
+        /*
+        // put keys in file
+        let mut consumer_key = String::from("");
+        let mut consumer_secret = String::from("");
+        let mut c = String::new();
+        if let Ok(mut f) = std::fs::File::open("./src/config/keys") {
+            f.read_to_string(&mut c).unwrap();
+            let mut iter = c.split('\n');
+
+            //consumer_key = iter.next().unwrap().to_string();
+            //consumer_secret = iter.next().unwrap().to_string();
+
+            let c_key = iter.next().unwrap();
+            let c_secret = iter.next();
+
+            match c_secret.unwrap() {
+                None => println!("no"),
+                _ => println!("yes"),
+            }
+        } else {
+            // create file
+        }
+        */
         
         // keys, find a way to keep these hidden
         let consumer_key = String::from("pZuHdmyRc84cDRDNjlLmbqXH5");

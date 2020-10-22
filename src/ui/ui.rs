@@ -50,6 +50,7 @@ pub fn build_ui(
     }
 
     // trying to avoid the user making the terminal too small
+    
     if terminal_width < 117 || terminal_height < 33 {
         terminal.draw(|f| {
             // error
@@ -126,34 +127,6 @@ pub fn build_ui(
                 width: 80,
                 height: 17,
             };
-
-            /*
-            let description_list = [
-                ListItem::new(" "),
-                ListItem::new(
-                Text::styled(
-                    " twitter-tui is a lightweight in-terminal user-interface for twitter.",
-                    Style::default().add_modifier(Modifier::ITALIC),
-                )),
-                ListItem::new(" "),
-                ListItem::new(" Hey, I'm Ryan,"),
-                ListItem::new(" "),
-                ListItem::new(
-                    "   An undergrad computer-science student at University of Maryland.",
-                ),
-                ListItem::new("   I created this because I read up on the rust programming language,"),
-                ListItem::new(
-                    "   thought it was cool, and decided to think of an interesting project",
-                ),
-                ListItem::new("   to help me learn rust. As fun as reading official language"),
-                ListItem::new("   documentation is (lol) I prefer just making something. The"),
-                ListItem::new("   program doesn't allow any write permissions, but maybe I'll"),
-                ListItem::new("   add that in one day :)"),
-                ListItem::new(" "),
-                ListItem::new(" GitHub: RyanDBurke"),
-                ListItem::new(" https://ryandburke.github.io/"),
-            ];
-            */
 
             let description_list = vec![
                 Spans::from(vec![

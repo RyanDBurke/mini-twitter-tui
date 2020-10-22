@@ -23,25 +23,25 @@ async fn main() -> std::result::Result<(), Error> {
     let stdin = stdin();
     let _stdout = stdout().into_raw_mode().unwrap();
 
-    // command ags
+    // command args
     let args: Vec<String> = env::args().collect();
 
     // boolean for producing fake tweets
     let mut produce_fake_tweets = false;
     if args.len() > 1 {
-        if &args[1] == "fake-tweets" {
+        if &args[1] == "fake" {
             produce_fake_tweets = true;
         }
     }
 
-    // holds tweets
+    // build tweets
     let mut tweets: Vec<util::tweet::Tweet>;
     if produce_fake_tweets {
         // produce num_fake tweets
         let num_fake: i32 = 50;
         tweets = util::tweet::fake_tweets(num_fake);
     } else {
-        // for tweets
+        // retrieve real tweets
         let max_tweets = 20;
         let timeline = util::tweet::get_home_timeline(&config, max_tweets).await;
 

@@ -8,6 +8,12 @@ use crate::util::misc;
 use egg_mode::error::Result;
 use rand::Rng;
 
+pub struct Tweet {
+    pub text: [String; 2],
+    pub screen_name: String,
+    pub id: u64,
+}
+
 // print single tweet [run with .await]
 pub async fn get_tweet(config: &config::Config, tweet_id: u64) -> Result<String> {
     let mut result = String::from("");
@@ -29,12 +35,6 @@ pub async fn get_tweet(config: &config::Config, tweet_id: u64) -> Result<String>
     Ok(String::from(result))
 }
 
-pub struct Tweet {
-    pub text: [String; 2],
-    pub screen_name: String,
-    pub id: u64,
-}
-
 // return timeline with page_size number of tweets [use .await]
 pub async fn get_home_timeline(config: &config::Config, page_size: i32) -> Result<Vec<Tweet>> {
     let mut result: Vec<Tweet> = vec![];
@@ -45,7 +45,7 @@ pub async fn get_home_timeline(config: &config::Config, page_size: i32) -> Resul
         let tweet = &status;
 
         if let Some(ref user) = tweet.user {
-            //let tweet_chars: Vec<char> = tweet.text.chars().collect(); // tweet in vec<char>          
+            //let tweet_chars: Vec<char> = tweet.text.chars().collect(); // tweet in vec<char>
 
             // build Tweet struct
             let current_tweet = Tweet {
@@ -89,14 +89,14 @@ pub fn split_tweet(chars: Vec<char>) -> [String; 2] {
             result[result_iter] = current; // push string
             break;
         }
-        
+
         current.push(chars[pos]); // push char to current string
         current_len = current_len + 1;
         pos = pos + 1;
     }
 
     if result[1].chars().collect::<String>().len() >= 49 {
-        result[1] = format!("{}...", result[1]);    
+        result[1] = format!("{}...", result[1]);
     }
 
     return result;
@@ -115,18 +115,59 @@ pub fn slice_tweets(tweets: &Vec<Tweet>, start: usize, end: usize) -> Vec<&Tweet
 
 // generate fake tweets
 pub fn fake_tweets(amt: i32) -> Vec<Tweet> {
+    // list of fake tweet text
+    let fake_text: Vec<[String; 2]> = vec![
+        [
+            String::from("Lorem ipsum dolor sit amet,"),
+            String::from("consectetur adipiscing elit."),
+        ],
+        [
+            String::from("Hey, welcome to twitter-tui!"),
+            String::from(""),
+        ],
+        [
+            String::from("LeBron James is the greatest basketball"),
+            String::from("player ever! #witness"),
+        ],
+        [
+            String::from("A programming language empowering everyone"),
+            String::from("to build reliable and efficient software."),
+        ],
+        [String::from("Go Mavs! #MFFFL"), String::from("")],
+        [
+            String::from("they say true love can last an entire <'a>"),
+            String::from(""),
+        ],
+        [
+            String::from("I want to go to France one day!"),
+            String::from(""),
+        ],
+        [
+            String::from("it's finally friday!!"), 
+            String::from("")
+        ],
+    ];
 
-    let mut tweets : Vec<Tweet> = vec![];
+    // list of fake user names
+    let fake_user: Vec<String> = vec![
+        String::from("ryan"),
+        String::from("brian"),
+        String::from("cari"),
+        String::from("wes"),
+        String::from("charlie12"),
+        String::from("_brandon40"),
+        String::from("appleguy13"),
+        String::from("rb12"),
+    ];
+
+    let mut tweets: Vec<Tweet> = vec![];
     let mut rng = rand::thread_rng();
 
-    for i in 0..amt {
+    for _i in 0..amt {
         // create tweet
         let tweet = Tweet {
-            text: [
-                    String::from("Lorem ipsum dolor sit amet,"), 
-                    String::from("consectetur adipiscing elit."),
-                ],
-            screen_name: format!("bob_{}", i),
+            text: fake_text[rng.gen_range(0, fake_text.len())].clone(),
+            screen_name: fake_user[rng.gen_range(0, fake_user.len())].clone(),
             id: rng.gen_range(0, 200),
         };
 
