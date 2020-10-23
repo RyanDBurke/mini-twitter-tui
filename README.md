@@ -24,5 +24,5 @@ project and can't wait to get more acquainted with the language.
 ```
 
 ##
-<em>inspired by [spotify-tui](https://github.com/Rigellute/spotify-tui)</em>
+<em>inspired by [spotify-tui](https://github.com/Rigellute/spotify-tui)</em> </br>
 <em>[rust twitter library](https://github.com/egg-mode-rs/egg-mode)</em>
