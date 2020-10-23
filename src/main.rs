@@ -34,16 +34,15 @@ async fn main() -> std::result::Result<(), Error> {
         }
     }
 
-    // build tweets
+    // build tweets (whether real of fake)
     let mut tweets: Vec<util::tweet::Tweet>;
+    let num_tweets : i32 = 20;
     if produce_fake_tweets {
         // produce num_fake tweets
-        let num_fake: i32 = 50;
-        tweets = util::tweet::fake_tweets(num_fake);
+        tweets = util::tweet::fake_tweets(num_tweets);
     } else {
         // retrieve real tweets
-        let max_tweets = 20;
-        let timeline = util::tweet::get_home_timeline(&config, max_tweets).await;
+        let timeline = util::tweet::get_home_timeline(&config, num_tweets).await;
 
         // match with timeline
         match timeline {
@@ -98,6 +97,12 @@ async fn main() -> std::result::Result<(), Error> {
                         selected[x_pos][y_pos] = default_style;
                         y_pos = y_pos - 1;
                         selected[x_pos][y_pos] = selected_style;
+                    } else if y_pos == 0 && x_pos == 1 {
+                        // simulate pressing p
+                        if start != 0 {
+                            start = start - 1;
+                            end = end - 1;
+                        }
                     }
                 }
             }
@@ -120,6 +125,15 @@ async fn main() -> std::result::Result<(), Error> {
                             selected[x_pos][y_pos] = default_style;
                             y_pos = y_pos + 1;
                             selected[x_pos][y_pos] = selected_style;
+                        } else { //  y_pos is 4
+                            // simulate pressing n
+                            if end == (num_tweets as usize) {
+                                start = 0;
+                                end = 5;
+                            } else {
+                                start = start + 1;
+                                end = end + 1;
+                            }
                         }
                     } else {
                         // right column
@@ -174,10 +188,7 @@ async fn main() -> std::result::Result<(), Error> {
             // previous tweet
             Key::Char('p') => {
                 if !info {
-                    if start == 0 {
-                        start = 0;
-                        end = 5;
-                    } else {
+                    if start != 0 {
                         start = start - 1;
                         end = end - 1;
                     }
@@ -188,8 +199,7 @@ async fn main() -> std::result::Result<(), Error> {
             Key::Char('r') => {
                 if !info {
                     if  !produce_fake_tweets {
-                        let max_tweets = 20;
-                        let timeline = util::tweet::get_home_timeline(&config, max_tweets).await;
+                        let timeline = util::tweet::get_home_timeline(&config, num_tweets).await;
 
                         // match with timeline
                         match timeline {

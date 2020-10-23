@@ -83,6 +83,7 @@ impl Config {
             };
 
             if let Err(err) = egg_mode::auth::verify_tokens(&token).await {
+                println!("\n[Typically this error indicates incorrect consumer api keys!]\n\n");
                 println!("We've hit an error using your old tokens: {:?}", err);
                 println!("We'll have to reauthenticate before continuing.");
                 std::fs::remove_file("twitter_settings").unwrap();
