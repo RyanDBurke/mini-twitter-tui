@@ -63,11 +63,6 @@ impl Config {
             println!("\nGo to ./src/config/keys and fill-in your Twitter developer consumer-key\nand secret-key on the first and second line, respectively.\n");
             std::process::exit(1);
         }
-        
-        
-        // keys, find a way to keep these hidden
-        //let consumer_key = String::from("pZuHdmyRc84cDRDNjlLmbqXH5");
-        // let consumer_secret = String::from("cyghlODDLxlk7zbYjJEaWpNawBNzP3JcTcDxHGCy2JxNDFbUDD");
 
         let con_token = egg_mode::KeyPair::new(consumer_key, consumer_secret);
 
