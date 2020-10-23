@@ -2,7 +2,6 @@
 
 // personal imports
 mod config;
-mod test;
 mod ui;
 mod util;
 
