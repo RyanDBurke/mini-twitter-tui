@@ -1,6 +1,6 @@
 # mini-twitter-tui
 
-super lightweight in-terminal user-interface for twitter
+super lightweight in-terminal user-interface for twitter written in rust
 
 ## Installation
 
