@@ -221,7 +221,7 @@ pub fn build_ui(
             let chunks = Rect {
                 x: 1,
                 y: 1,
-                width: 110,
+                width: 66, // 82
                 height: 28,
             };
             let frame_body = Block::default()
@@ -233,7 +233,7 @@ pub fn build_ui(
             let chunks = Rect {
                 x: 1,
                 y: 1,
-                width: 110,
+                width: 66, // 82
                 height: 3,
             };
             let user_list = [
@@ -255,12 +255,13 @@ pub fn build_ui(
                 .divider(VERTICAL);
             f.render_widget(header, chunks);
 
+            /*
             // sidebar
             let chunks = Rect {
                 x: 3,
                 y: 4,
                 width: 16,
-                height: 6,
+                height: 24, // 6
             };
             let sidebar_items = [
                 ListItem::new(Text::styled(" home", selected[0][0])),
@@ -271,7 +272,9 @@ pub fn build_ui(
                 .block(Block::default().title(" tabs ").borders(Borders::ALL))
                 .style(Style::default().fg(Color::White));
             f.render_widget(sidebar, chunks);
+            */
 
+            /*
             // trending
             let chunks = Rect {
                 x: 3,
@@ -289,10 +292,11 @@ pub fn build_ui(
                 .block(Block::default().title(" trending ").borders(Borders::ALL))
                 .style(Style::default().fg(Color::White));
             f.render_widget(explore, chunks);
+            */
 
             // timeline box
             let chunks = Rect {
-                x: 20,
+                x: 3, //20
                 y: 4,
                 width: 60,
                 height: 24,
@@ -308,7 +312,7 @@ pub fn build_ui(
 
                 // single tweet in timeline
                 let chunks = Rect {
-                    x: 22,
+                    x: 5, // 22
                     y: y_margin,
                     width: 56,
                     height: 4, //4
@@ -331,6 +335,7 @@ pub fn build_ui(
                 y_margin = y_margin + 4;
             }
 
+            /*
             // search
             let chunks = Rect {
                 x: 81,
@@ -340,6 +345,7 @@ pub fn build_ui(
             };
             let search = Block::default().title(" misc ").borders(Borders::ALL);
             f.render_widget(search, chunks);
+            */
 
             // controls
             let chunks = Rect {

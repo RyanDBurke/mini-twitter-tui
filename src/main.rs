@@ -67,7 +67,7 @@ async fn main() -> std::result::Result<(), Error> {
     let default_style = Style::default().fg(Color::White);
     let selected_style = Style::default().fg(Color::Rgb(29, 161, 242));
     let mut selected: Vec<Vec<Style>> = vec![vec![default_style; 7]; 3];
-    let (mut x_pos, mut y_pos) = (0, 0); // keep track of position
+    let (x_pos, mut y_pos) = (1, 0); // keep track of position
     selected[x_pos][y_pos] = selected_style; // select first position
                                              /*
                                                  selected[1][4] = "h"
@@ -148,6 +148,7 @@ async fn main() -> std::result::Result<(), Error> {
             }
 
             // horizontal keys
+            /*
             Key::Left => {
                 if !info {
                     if x_pos != 0 {
@@ -171,6 +172,7 @@ async fn main() -> std::result::Result<(), Error> {
                     }
                 }
             }
+            */
 
             // next tweet
             Key::Char('n') => {

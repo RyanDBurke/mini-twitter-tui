@@ -2,6 +2,7 @@
 
 // clear out warnings
 #![allow(dead_code)]
+#![allow(unused_assignments)]
 
 use egg_mode;
 use std;
@@ -30,7 +31,7 @@ impl Config {
     /// the output which doesn't seem worthwhile
     pub async fn load_inner() -> Option<Self> {
         
-        /*
+        
         // put keys in file
         let mut consumer_key = String::from("");
         let mut consumer_secret = String::from("");
@@ -39,24 +40,34 @@ impl Config {
             f.read_to_string(&mut c).unwrap();
             let mut iter = c.split('\n');
 
-            //consumer_key = iter.next().unwrap().to_string();
-            //consumer_secret = iter.next().unwrap().to_string();
+            if let Some(key) = iter.next() {
+                consumer_key = key.to_string();
+            } else {
+                println!("\n[Typically this error indicates incorrect consumer api keys!]");
+                println!("Go to ./src/config/keys and fill-in your Twitter developer consumer-key\nand secret-key on the first and second line, respectively.\n");
+                std::process::exit(1);
+            }
 
-            let c_key = iter.next().unwrap();
-            let c_secret = iter.next();
-
-            match c_secret.unwrap() {
-                None => println!("no"),
-                _ => println!("yes"),
+            if let Some(secret) = iter.next() {
+                consumer_secret = secret.to_string();
+            } else {
+                println!("\n[Typically this error indicates incorrect consumer api keys!]");
+                println!("Go to ./src/config/keys and fill-in your Twitter developer consumer-key\nand secret-key on the first and second line, respectively.\n");
+                std::process::exit(1);
             }
         } else {
             // create file
+            let mut f = std::fs::File::create("./src/config/keys").unwrap();
+            let create_file = String::from("consumer-key\nconsumer-secret-key");
+            f.write_all(create_file.as_bytes()).unwrap();
+            println!("\nGo to ./src/config/keys and fill-in your Twitter developer consumer-key\nand secret-key on the first and second line, respectively.\n");
+            std::process::exit(1);
         }
-        */
+        
         
         // keys, find a way to keep these hidden
-        let consumer_key = String::from("pZuHdmyRc84cDRDNjlLmbqXH5");
-        let consumer_secret = String::from("cyghlODDLxlk7zbYjJEaWpNawBNzP3JcTcDxHGCy2JxNDFbUDD");
+        //let consumer_key = String::from("pZuHdmyRc84cDRDNjlLmbqXH5");
+        // let consumer_secret = String::from("cyghlODDLxlk7zbYjJEaWpNawBNzP3JcTcDxHGCy2JxNDFbUDD");
 
         let con_token = egg_mode::KeyPair::new(consumer_key, consumer_secret);
 
@@ -83,7 +94,9 @@ impl Config {
             };
 
             if let Err(err) = egg_mode::auth::verify_tokens(&token).await {
-                println!("\n[Typically this error indicates incorrect consumer api keys!]\n\n");
+                println!("\n[Typically this error indicates incorrect consumer api keys!]");
+                println!("Go to ./src/config/keys and fill-in your Twitter developer consumer-key\nand secret-key on the first and second line, respectively.\n");
+                println!("ERROR");
                 println!("We've hit an error using your old tokens: {:?}", err);
                 println!("We'll have to reauthenticate before continuing.");
                 std::fs::remove_file("twitter_settings").unwrap();

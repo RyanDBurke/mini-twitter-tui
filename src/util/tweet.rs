@@ -63,6 +63,7 @@ pub async fn get_home_timeline(config: &config::Config, page_size: i32) -> Resul
     Ok(result)
 }
 
+// split long tweets into a max of 2 lines.
 pub fn split_tweet(chars: Vec<char>) -> [String; 2] {
     // stash our tweet-lines
     let mut result: [String; 2] = [String::from(""), String::from("")];
