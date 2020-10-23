@@ -1,6 +1,6 @@
-# twitter-tui
+# mini-twitter-tui
 
-lightweight in-terminal user-interface for twitter
+super lightweight in-terminal user-interface for twitter
 
 ## Installation
 
