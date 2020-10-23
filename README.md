@@ -6,7 +6,7 @@
 
 #### What You Need
 * [Twitter Developer Account](https://developer.twitter.com/en)
-* [Twitter Developer api key and secret-key](https://developer.twitter.com/en/portal/dashboard)
+* [Twitter Developer API key and secret-key](https://developer.twitter.com/en/portal/dashboard)
 
 #### Run
 1. ```git clone https://github.com/RyanDBurke/mini-twitter-tui.git```
@@ -25,4 +25,4 @@ project and can't wait to get more acquainted with the language.
 
 ##
 <em>inspired by [spotify-tui](https://github.com/Rigellute/spotify-tui)</em> </br>
-<em>[rust twitter library](https://github.com/egg-mode-rs/egg-mode)</em>
+<em>i used this [rust twitter library](https://github.com/egg-mode-rs/egg-mode)</em>
