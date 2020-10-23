@@ -1,30 +1,13 @@
 # twitter-tui
 
-lightweight in-terminal user interface for twitter [written in Rust]
+lightweight in-terminal user-interface for twitter
 
-# recommended terminal size:
-Width: 117
-Height: 30
+## Installation
 
-## File Structure <a name="structure"></a>
-    twitter-tui
-    ├── README 
-    ├── Cargo.toml
-    ├── Cargo.lock
-    └── src
-        ├── main.rs
-        |
-        ├── config                     
-        |   ├── config.rs      
-        |   ├── mod.rs    
-        |   └── settings
-        |
-        ├── ui                      
-        |   ├── ui.rs         
-        |   └── mod.rs
-        |
-        └── util 
-            ├── misc.rs    
-            ├── tweet.rs  
-            ├── user.rs     
-            └── mod.rs
+#### What You Need
+* [Twitter Developer Account](https://developer.twitter.com/en)
+* [Twitter Developer api key and secret-key](https://developer.twitter.com/en/portal/dashboard)
+
+#### Run
+```1.  git clone https://github.com/RyanDBurke/twitter-tui.git ```
+```2.  cargo run ```
