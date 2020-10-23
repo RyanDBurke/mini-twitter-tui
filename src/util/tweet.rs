@@ -147,6 +147,10 @@ pub fn fake_tweets(amt: i32) -> Vec<Tweet> {
             String::from("it's finally friday!!"), 
             String::from("")
         ],
+        [
+            String::from("wow, this is a pretty neat little project."), 
+            String::from("I wonder what ryan wil do next!")
+        ]
     ];
 
     // list of fake user names
@@ -158,7 +162,10 @@ pub fn fake_tweets(amt: i32) -> Vec<Tweet> {
         String::from("charlie12"),
         String::from("_brandon40"),
         String::from("appleguy13"),
-        String::from("rb12"),
+        String::from("rb23"),
+        String::from("KingJames23"),
+        String::from("JohnDoe1"),
+        String::from("JaneDoe0"),
     ];
 
     let mut tweets: Vec<Tweet> = vec![];
