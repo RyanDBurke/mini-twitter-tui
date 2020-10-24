@@ -1,6 +1,6 @@
 # mini-twitter-tui
 
-:crab: lightweight in-terminal user-interface for twitter written in rust
+:crab: lightweight in-terminal user-interface to view your twitter home timeline.
 
 ## Installation
 
@@ -25,4 +25,4 @@ project and can't wait to get more acquainted with the language.
 
 ##
 <em>Inspired by [spotify-tui](https://github.com/Rigellute/spotify-tui)</em> </br>
-<em>I used this [rust twitter library](https://github.com/egg-mode-rs/egg-mode)</em>
+<em>I used this [rust-twitter-library](https://github.com/egg-mode-rs/egg-mode)</em>
