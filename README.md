@@ -4,7 +4,7 @@
   <img src="./logo.png" alt="twitter-tui-demo" name="demo">
 </figure>
 
-<div align="center" style="font-family: monospace;"> lightweight in-terminal user-interface to view your twitter home timeline. </div>
+<div align="center"> lightweight in-terminal user-interface to view your twitter home timeline. </div>
 
 ## Demo
 
