@@ -1,10 +1,10 @@
 # mini-twitter-tui
 
-:crab: lightweight in-terminal user-interface to view your twitter home timeline.
-
 <figure>
   <img src="./logo.png" alt="twitter-tui-demo" name="demo">
 </figure>
+
+:crab: lightweight in-terminal user-interface to view your twitter home timeline.
 
 ## Installation
 
