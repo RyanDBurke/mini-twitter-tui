@@ -4,7 +4,7 @@
   <img src="./logo.png" alt="twitter-tui-demo" name="demo">
 </figure>
 
-<center> :crab: lightweight in-terminal user-interface to view your twitter home timeline. </center>
+<div align="center"> :crab: lightweight in-terminal user-interface to view your twitter home timeline. </div>
 
 ## Demo
 
