@@ -6,6 +6,13 @@
 
 :crab: lightweight in-terminal user-interface to view your twitter home timeline.
 
+## Demo
+
+<figure>
+  <img src="./twitter-tu-demo.png" alt="twitter-tui-demo" name="demo">
+</figure>
+
+
 ## Installation
 
 #### What You Need
