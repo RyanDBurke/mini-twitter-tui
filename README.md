@@ -5,6 +5,9 @@
 <figure>
   <img src="./mini-twitter-tui.png" alt="twitter-tui-demo" name="demo">
 </figure>
+<figure>
+  <img src="./twitter-tu-demo.png" alt="twitter-tui-demo" name="demo">
+</figure>
 
 ## Installation
 
