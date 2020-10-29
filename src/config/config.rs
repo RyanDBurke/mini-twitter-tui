@@ -42,7 +42,7 @@ impl Config {
                 consumer_key = key.to_string();
             } else {
                 println!("\n[Typically this error indicates incorrect consumer api keys!]");
-                println!("Go to ./src/config/keys and fill-in your Twitter developer consumer-key\nand secret-key on the first and second line, respectively.\n");
+                println!("Go to ./src/config/keys and fill-in your Twitter developer API-key\nand API-secret-key on the first and second line, respectively.\nThen execute with 'cargo run'.\n");
                 std::process::exit(1);
             }
 
@@ -50,15 +50,15 @@ impl Config {
                 consumer_secret = secret.to_string();
             } else {
                 println!("\n[Typically this error indicates incorrect consumer api keys!]");
-                println!("Go to ./src/config/keys and fill-in your Twitter developer consumer-key\nand secret-key on the first and second line, respectively.\n");
+                println!("Go to ./src/config/keys and fill-in your Twitter developer API-key\nand API-secret-key on the first and second line, respectively.\nThen execute with 'cargo run'.\n");
                 std::process::exit(1);
             }
         } else {
             // create file
             let mut f = std::fs::File::create("./src/config/keys").unwrap();
-            let create_file = String::from("replace this line with your consumer-key\nreplace this line with your consumer-secret-key");
+            let create_file = String::from("replace this line with your API-key\nreplace this line with your API-secret-key");
             f.write_all(create_file.as_bytes()).unwrap();
-            println!("\nGo to ./src/config/keys and fill-in your Twitter developer consumer-key\nand secret-key on the first and second line, respectively.\n");
+            println!("\nGo to ./src/config/keys and fill-in your Twitter developer API-key\nand API-secret-key on the first and second line, respectively.\nThen execute with 'cargo run'.\n");
             std::process::exit(1);
         }
 
@@ -88,7 +88,7 @@ impl Config {
 
             if let Err(err) = egg_mode::auth::verify_tokens(&token).await {
                 println!("\n[Typically this error indicates incorrect consumer api keys!]");
-                println!("Go to ./src/config/keys and fill-in your Twitter developer consumer-key\nand secret-key on the first and second line, respectively.\n");
+                println!("Go to ./src/config/keys and fill-in your Twitter developer API-key\nand API-secret-key on the first and second line, respectively.\nThen execute with 'cargo run'.\n");
                 println!("ERROR");
                 println!("We've hit an error using your old tokens: {:?}", err);
                 println!("We'll have to reauthenticate before continuing.");
