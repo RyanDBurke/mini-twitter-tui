@@ -1,7 +1,7 @@
 # mini-twitter-tui
 
 <figure>
-  <img src="./banner.png" alt="twitter-tui-demo" name="demo">
+  <img src="./logo.png" alt="twitter-tui-demo" name="demo">
 </figure>
 
 <div align="center"> lightweight in-terminal user-interface to view your twitter home timeline. </div>
