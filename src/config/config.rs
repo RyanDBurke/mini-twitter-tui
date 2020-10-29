@@ -30,8 +30,6 @@ impl Config {
     /// settings file. Idealy we would recurse, but that requires boxing
     /// the output which doesn't seem worthwhile
     pub async fn load_inner() -> Option<Self> {
-        
-        
         // put keys in file
         let mut consumer_key = String::from("");
         let mut consumer_secret = String::from("");
@@ -58,7 +56,7 @@ impl Config {
         } else {
             // create file
             let mut f = std::fs::File::create("./src/config/keys").unwrap();
-            let create_file = String::from("consumer-key\nconsumer-secret-key");
+            let create_file = String::from("replace this line with your consumer-key\nreplace this line with your consumer-secret-key");
             f.write_all(create_file.as_bytes()).unwrap();
             println!("\nGo to ./src/config/keys and fill-in your Twitter developer consumer-key\nand secret-key on the first and second line, respectively.\n");
             std::process::exit(1);
@@ -96,10 +94,24 @@ impl Config {
                 println!("We'll have to reauthenticate before continuing.");
                 std::fs::remove_file("twitter_settings").unwrap();
             } else {
-                println!("[welcome, @{}, press any key to begin]\n", username);
+                println!(
+                    "              _       _    __           _ __  __               __        _ "
+                );
+                println!(
+                    "   ____ ___  (_)___  (_)  / /__      __(_) /_/ /____  _____   / /___  __(_)"
+                );
+                println!("  / __ `__ \\/ / __ \\/ /  / __/ | /| / / / __/ __/ _ \\/ ___/  / __/ / / / / ");
+                println!(
+                    " / / / / / / / / / / /  / /_ | |/ |/ / / /_/ /_/  __/ /     / /_/ /_/ / /  "
+                );
+                println!("/_/ /_/ /_/_/_/ /_/_/   \\__/ |__/|__/_/\\__/\\__/\\___/_/      \\__/\\__,_/_/   ");
+
+                println!("\n[welcome, @{}, press any key to begin]\n", username);
             }
         } else {
-            let request_token = egg_mode::auth::request_token(&con_token, "oob").await.unwrap();
+            let request_token = egg_mode::auth::request_token(&con_token, "oob")
+                .await
+                .unwrap();
 
             println!("Go to the following URL, sign in, and give me the PIN that comes back:");
             println!("{}", egg_mode::auth::authorize_url(&request_token));
@@ -135,7 +147,16 @@ impl Config {
             let mut f = std::fs::File::create("./src/config/settings").unwrap();
             f.write_all(config.as_bytes()).unwrap();
 
-            println!("[welcome, @{}, press any key to begin]\n", username);
+            println!("              _       _    __           _ __  __               __        _ ");
+            println!("   ____ ___  (_)___  (_)  / /__      __(_) /_/ /____  _____   / /___  __(_)");
+            println!(
+                "  / __ `__ \\/ / __ \\/ /  / __/ | /| / / / __/ __/ _ \\/ ___/  / __/ / / / / "
+            );
+            println!(" / / / / / / / / / / /  / /_ | |/ |/ / / /_/ /_/  __/ /     / /_/ /_/ / /  ");
+            println!(
+                "/_/ /_/ /_/_/_/ /_/_/   \\__/ |__/|__/_/\\__/\\__/\\___/_/      \\__/\\__,_/_/   "
+            );
+            println!("\n[welcome, @{}, press any key to begin]\n", username);
         }
 
         //TODO: Is there a better way to query whether a file exists?
