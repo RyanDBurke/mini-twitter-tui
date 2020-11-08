@@ -1,3 +1,7 @@
+<br />
+<div align="center">:crab:</div>
+<br />
+
 # mini-twitter-tui
 
 <figure>
