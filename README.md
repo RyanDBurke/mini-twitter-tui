@@ -38,5 +38,5 @@ acquainted with the language.
 ```
 
 ##
-<em>Inspired by [spotify-tui](https://github.com/Rigellute/spotify-tui)</em> </br>
+<em>Inspired by [spotify-tui](https://github.com/Rigellute/spotify-tui)</em>  </br>
 <em>I used this [rust-twitter-library](https://github.com/egg-mode-rs/egg-mode)</em>
